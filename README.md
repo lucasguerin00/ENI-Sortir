@@ -99,5 +99,3 @@ Une application web fonctionnelle permettant de :
 * Favoriser la mise en relation et la cohésion des stagiaires ENI.
 
 ---
-
-👨‍💻 Projet développé par : *\[Noms des 3 étudiants]*
