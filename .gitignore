@@ -18,3 +18,5 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+migrations/Version20250923081614.php
+/node_modules
