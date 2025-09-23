@@ -19,6 +19,7 @@ class UserFixtures extends Fixture
         $userAdmin->setMail('chaigneau851@gmail.com');
         $userAdmin->setNom('Chaigneau');
         $userAdmin->setPrenom('Aimé');
+        $userAdmin->setPseudo('AragornDu85');
         $userAdmin->setIdSite(null);
         $userAdmin->setTelephone("025103504");
         $userAdmin->setIsAdministrateur(1);
@@ -37,6 +38,7 @@ class UserFixtures extends Fixture
         $userCloe->setMail('cloé@gmail.com');
         $userCloe->setNom('Lemaréchal');
         $userCloe->setPrenom('Cloé');
+        $userCloe->setPseudo('Cloé27');
         $userCloe->setIdSite(null);
         $userCloe->setTelephone("025103504");
         $userCloe->setIsAdministrateur(1);
@@ -55,6 +57,7 @@ class UserFixtures extends Fixture
         $userLucas->setMail('lucas@gmail.com');
         $userLucas->setNom('Guérin');
         $userLucas->setPrenom('Lucas');
+        $userLucas->setPseudo('lucasguerin00');
         $userLucas->setIdSite(null);
         $userLucas->setTelephone("025103504");
         $userLucas->setIsAdministrateur(1);
