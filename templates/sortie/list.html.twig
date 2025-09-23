@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des sorties{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_sortie_new') }}">Créer une sortie</a>
+
+    <h1>Liste des sorties</h1>
+
+    {% if sorties is empty %}
+        <p>Aucune sortie n'a été créée pour le moment.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Date du début</th>
+                <th>Durée (min)</th>
+                <th>Lieu</th>
+                <th>Site</th>
+                <th>Infos sur la sortie</th>
+                <th>État</th>
+                <th>Organisateur</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y H:i') : '' }}</td>
+                    <td>{{ sortie.duree }}</td>
+                    <td>{{ sortie.idLieu ? sortie.idLieu.nom : '' }}</td>
+                    <td>{{ sortie.idSite ? sortie.idSite.nom : '' }}</td>
+                    <td>{{ sortie.infosSortie ? sortie.infosSortie : '' }}</td>
+                    <td>{{ sortie.etat ? sortie.etat.libelle : '' }}</td>
+                    <td>{{ sortie.idOrganisateur ? sortie.idOrganisateur.username : '' }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}
