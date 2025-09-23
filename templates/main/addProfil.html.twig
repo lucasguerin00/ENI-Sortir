@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<htmL lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initialscale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Profil</title>
+</head>
+<body>
+{# entête du site #}
+<header>
+    <div class="container">
+        <h1 class="header-logo">
+            ENI-SORTIR
+        </h1>
+        {% include('_navbar.html.twig') %}
+    </div>
+</header>
+    {# templates/user/create.html.twig #}
+    {% extends 'base.html.twig' %}
+
+    {% block title %}Créer un utilisateur{% endblock %}
+
+    {% block body %}
+        <h1>Créer un utilisateur</h1>
+
+        {{ form_start(form) }}
+        {{ form_row(form.email) }}
+        {{ form_row(form.password) }}
+        <button class="btn">Créer</button>
+        {{ form_end(form) }}
+    {% endblock %}
+</body>
+</htmL>
