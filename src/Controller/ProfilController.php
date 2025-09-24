@@ -30,7 +30,7 @@ class ProfilController extends AbstractController
             'nom' => $participant->getNom(),
             'prenom' => $participant->getPrenom(),
             'telephone' => $participant->getTelephone(),
-            'site' => ($siteRepository->find($participant['id_site_id']) ? $siteRepository->find($participant['id_site_id']) : null),
+            'site' => ($siteRepository->find($participant->getIdSite()) ? $siteRepository->find($participant>getIdSite()) : null),
         ]);
     }
 
