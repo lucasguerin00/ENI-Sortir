@@ -34,7 +34,7 @@
                     <td>{{ sortie.idSite ? sortie.idSite.nom : '' }}</td>
                     <td>{{ sortie.infosSortie ? sortie.infosSortie : '' }}</td>
                     <td>{{ sortie.etat ? sortie.etat.libelle : '' }}</td>
-                    <td>{{ sortie.idOrganisateur ? sortie.idOrganisateur.username : '' }}</td>
+                    <td>{{ sortie.idOrganisateur ? sortie.idOrganisateur.pseudo : '' }}</td>
                     <td>
                         {# Bouton Archiver #}
                         <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}" onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">

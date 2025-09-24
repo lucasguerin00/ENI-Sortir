@@ -15,9 +15,6 @@ class Ville
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idVille = null;
-
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
@@ -38,18 +35,6 @@ class Ville
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getIdVille(): ?int
-    {
-        return $this->idVille;
-    }
-
-    public function setIdVille(int $idVille): static
-    {
-        $this->idVille = $idVille;
-
-        return $this;
     }
 
     public function getNom(): ?string
@@ -88,7 +73,7 @@ class Ville
     {
         if (!$this->lieux->contains($lieux)) {
             $this->lieux->add($lieux);
-            $lieux->setIdVille($this);
+            $lieux->setVille($this);
         }
 
         return $this;
@@ -98,8 +83,8 @@ class Ville
     {
         if ($this->lieux->removeElement($lieux)) {
             // set the owning side to null (unless already changed)
-            if ($lieux->getIdVille() === $this) {
-                $lieux->setIdVille(null);
+            if ($lieux->getVille() === $this) {
+                $lieux->setVille(null);
             }
         }
 

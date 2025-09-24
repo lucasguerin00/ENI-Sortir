@@ -15,9 +15,6 @@ class Lieu
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idLieu = null;
-
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
@@ -49,18 +46,6 @@ class Lieu
         return $this->id;
     }
 
-    public function getIdLieu(): ?int
-    {
-        return $this->idLieu;
-    }
-
-    public function setIdLieu(int $idLieu): static
-    {
-        $this->idLieu = $idLieu;
-
-        return $this;
-    }
-
     public function getNom(): ?string
     {
         return $this->nom;
@@ -72,6 +57,7 @@ class Lieu
 
         return $this;
     }
+
 
     public function getRue(): ?string
     {
@@ -139,12 +125,12 @@ class Lieu
         return $this;
     }
 
-    public function getIdVille(): ?Ville
+    public function getVille(): ?Ville
     {
         return $this->idVille;
     }
 
-    public function setIdVille(?Ville $idVille): static
+    public function setVille(?Ville $idVille): static
     {
         $this->idVille = $idVille;
 
