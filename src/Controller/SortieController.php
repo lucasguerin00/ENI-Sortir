@@ -20,7 +20,7 @@ class SortieController extends AbstractController
     #[Route('/sorties', name: 'app_sortie_list')]
     public function list(EntityManagerInterface $entityManager): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+        $sorties = $entityManager->getRepository(Sortie::class)->findAllActive();
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,
@@ -48,4 +48,32 @@ class SortieController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    #[Route('/sortie/{id}/delete', name: 'app_sortie_delete', methods: ['POST'])]
+    public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifie le token CSRF pour éviter l'annulation accidentelle
+        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Sortie annulé avec succès !');
+        }
+
+        return $this->redirectToRoute('app_sortie_list');
+    }
+
+    #[Route('/sortie/{id}/archive', name: 'app_sortie_archive', methods: ['POST'])]
+    public function archive(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('archive'.$sortie->getId(), $request->request->get('_token'))) {
+            $sortie->setIsArchived(true);
+            $sortie->setArchivedAt(new \DateTime());
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Sortie archivée avec succès !');
+        }
+
+        return $this->redirectToRoute('app_sortie_list');
+    }
+
 }
