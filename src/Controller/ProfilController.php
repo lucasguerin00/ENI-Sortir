@@ -2,10 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Participant;
+use App\Form\ParticipantType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
@@ -30,27 +35,27 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/profil/create', name: 'create_participant')]
-    public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordEncoderInterface $passwordEncoder): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder): Response
     {
         $user = new Participant();
 
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(ParticipantType::class, $user);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Hash le mot de passe
-            $user->setPassword($passwordEncoder->encodePassword($user, $user->getPassword()));
+            $user->setPassword($passwordEncoder->hashPassword($user, $user->getPassword()));
 
             // Enregistrer l'utilisateur dans la base de données
             $entityManager->persist($user);
             $entityManager->flush();
 
             // Redirection ou message de succès
-            return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('profil');
         }
 
-        return $this->render('user/create.html.twig', [
+        return $this->render('user/addProfil.html.twig', [
             'form' => $form->createView(),
         ]);
     }
