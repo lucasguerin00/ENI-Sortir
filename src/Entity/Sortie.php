@@ -51,6 +51,9 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sortiesInscrit')]
     private Collection $participants;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isArchived = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -201,6 +204,18 @@ class Sortie
     public function removeParticipant(Participant $participant): static
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    public function isArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(?bool $isArchived): static
+    {
+        $this->isArchived = $isArchived;
 
         return $this;
     }
