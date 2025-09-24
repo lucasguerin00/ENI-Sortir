@@ -43,4 +43,19 @@ class SortieController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    #[Route('/sortie/{id}/delete', name: 'app_sortie_delete', methods: ['POST'])]
+    public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifie le token CSRF pour éviter l'annulation accidentelle
+        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($sortie);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Sortie annulé avec succès !');
+        }
+
+        return $this->redirectToRoute('app_sortie_list');
+    }
+
+
 }
