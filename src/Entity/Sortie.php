@@ -54,6 +54,9 @@ class Sortie
     #[ORM\Column(nullable: true)]
     private ?bool $isArchived = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $archivedAt = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -216,6 +219,18 @@ class Sortie
     public function setIsArchived(?bool $isArchived): static
     {
         $this->isArchived = $isArchived;
+
+        return $this;
+    }
+
+    public function getArchivedAt(): ?\DateTime
+    {
+        return $this->archivedAt;
+    }
+
+    public function setArchivedAt(?\DateTime $archivedAt): static
+    {
+        $this->archivedAt = $archivedAt;
 
         return $this;
     }

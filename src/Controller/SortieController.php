@@ -62,6 +62,7 @@ class SortieController extends AbstractController
     {
         if ($this->isCsrfTokenValid('archive'.$sortie->getId(), $request->request->get('_token'))) {
             $sortie->setIsArchived(true);
+            $sortie->setArchivedAt(new \DateTime());
             $entityManager->flush();
 
             $this->addFlash('success', 'Sortie archivée avec succès !');
@@ -69,6 +70,5 @@ class SortieController extends AbstractController
 
         return $this->redirectToRoute('app_sortie_list');
     }
-
 
 }
