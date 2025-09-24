@@ -3,55 +3,68 @@
 {% block title %}Liste des sorties{% endblock %}
 
 {% block body %}
-    <a href="{{ path('app_sortie_new') }}">Créer une sortie</a>
+    <div class="max-w-7xl mx-auto mt-10 px-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Liste des sorties</h1>
+            <a href="{{ path('app_sortie_new') }}" class="focus:outline-none text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 shadow">
+                Créer une sortie
+            </a>
+        </div>
 
-    <h1>Liste des sorties</h1>
+        {% if sorties is empty %}
+            <p class="text-center text-gray-600 italic">Aucune sortie n'a été créée pour le moment.</p>
+        {% else %}
+            <div class="overflow-x-auto shadow-lg rounded-lg">
+                <table class="w-full border-collapse bg-white">
 
-    {% if sorties is empty %}
-        <p>Aucune sortie n'a été créée pour le moment.</p>
-    {% else %}
-        <table>
-            <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Date du début</th>
-                <th>Durée (min)</th>
-                <th>Lieu</th>
-                <th>Site</th>
-                <th>Infos sur la sortie</th>
-                <th>État</th>
-                <th>Organisateur</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for sortie in sorties %}
-                <tr>
-                    <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y H:i') : '' }}</td>
-                    <td>{{ sortie.duree }}</td>
-                    <td>{{ sortie.idLieu ? sortie.idLieu.nom : '' }}</td>
-                    <td>{{ sortie.idSite ? sortie.idSite.nom : '' }}</td>
-                    <td>{{ sortie.infosSortie ? sortie.infosSortie : '' }}</td>
-                    <td>{{ sortie.etat ? sortie.etat.libelle : '' }}</td>
-                    <td>{{ sortie.idOrganisateur ? sortie.idOrganisateur.nom : '' }}</td>
-                    <td>
-                        {# Bouton Archiver #}
-                        <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}" onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ sortie.id) }}">
-                            <button>Archiver</button>
-                        </form>
+                    <thead class="bg-gray-100 text-gray-700 uppercase text-sm">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Nom</th>
+                            <th class="px-4 py-3 text-left">Date du début</th>
+                            <th class="px-4 py-3 text-left">Durée (min)</th>
+                            <th class="px-4 py-3 text-left">Lieu</th>
+                            <th class="px-4 py-3 text-left">Site</th>
+                            <th class="px-4 py-3 text-left">Infos</th>
+                            <th class="px-4 py-3 text-left">État</th>
+                            <th class="px-4 py-3 text-left">Organisateur</th>
+                            <th class="px-4 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
 
-                        {# Bouton Supprimer #}
-                        <form method="post" action="{{ path('app_sortie_delete', {id: sortie.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette sortie ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sortie.id) }}">
-                            <button>Annuler</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+                    <tbody class="divide-y divide-gray-200 text-sm text-gray-800">
+                        {% for sortie in sorties %}
+                            <tr class="hover:bg-gray-50">
 
+                                <td class="px-4 py-3">{{ sortie.nom }}</td>
+                                <td class="px-4 py-3">{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y H:i') : '' }}</td>
+                                <td class="px-4 py-3">{{ sortie.duree }}</td>
+                                <td class="px-4 py-3">{{ sortie.idLieu ? sortie.idLieu.nom : '' }}</td>
+                                <td class="px-4 py-3">{{ sortie.idSite ? sortie.idSite.nom : '' }}</td>
+                                <td class="px-4 py-3">{{ sortie.infosSortie ? sortie.infosSortie : '' }}</td>
+                                <td class="px-4 py-3">{{ sortie.etat ? sortie.etat.libelle : '' }}</td>
+                                <td class="px-4 py-3">
+                                    {{ sortie.idOrganisateur ? sortie.idOrganisateur.prenom : '' }} {{ sortie.idOrganisateur ? sortie.idOrganisateur.nom : '' }}
+                                </td>
+
+                                {# Actions #}
+                                <td class="px-4 py-3 flex gap-2 justify-center">
+                                    <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}" onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ sortie.id) }}">
+                                        <button class="px-3 py-1.5 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600">Archiver</button>
+                                    </form>
+
+                                    <form method="post" action="{{ path('app_sortie_delete', {id: sortie.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette sortie ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sortie.id) }}">
+                                        <button class="px-3 py-1.5 bg-red-600 text-white text-xs rounded hover:bg-red-700">Annuler</button>
+                                    </form>
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

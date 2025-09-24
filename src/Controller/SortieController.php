@@ -32,6 +32,14 @@ class SortieController extends AbstractController
     {
         $sortie = new Sortie();
 
+        // Récupère l'utilisateur connecté
+        $user = $this->getUser();
+
+        if ($user) {
+            // Assigne l'organisateur à l'utilisateur connecté
+            $sortie->setIdOrganisateur($user);
+        }
+
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
@@ -48,6 +56,7 @@ class SortieController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
     #[Route('/sortie/{id}/delete', name: 'app_sortie_delete', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
