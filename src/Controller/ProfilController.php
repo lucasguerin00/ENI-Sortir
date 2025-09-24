@@ -22,7 +22,7 @@ class ProfilController extends AbstractController
     #[Route('/profil', name: 'profil', methods: ['GET'])]
     public function showProfil(ParticipantRepository $participantRepository, SiteRepository $siteRepository): Response {
 
-        $participant = $participantRepository->createQueryBuilder('1');
+        $participant = $participantRepository->findOneBySomeField('1');
 
         return $this->render('main/profil.html.twig', [
             'pseudo' => $participant['pseudo'],
