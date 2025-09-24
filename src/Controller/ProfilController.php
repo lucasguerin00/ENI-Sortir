@@ -25,12 +25,12 @@ class ProfilController extends AbstractController
         $participant = $participantRepository->findOneBySomeField('1');
 
         return $this->render('main/profil.html.twig', [
-            'pseudo' => $participant['pseudo'],
-            'email' => $participant['email'],
-            'nom' => $participant['nom'],
-            'prenom' => $participant['prenom'],
-            'telephone' => $participant['telephone'],
-            'site' => $siteRepository->find($participant['id_site_id'])
+//            'pseudo' => $participant->getPseudo(),
+            'email' => $participant->getMail(),
+            'nom' => $participant->getNom(),
+            'prenom' => $participant->getPrenom(),
+            'telephone' => $participant->getTelephone(),
+            'site' => ($siteRepository->find($participant['id_site_id']) ? $siteRepository->find($participant['id_site_id']) : null),
         ]);
     }
 
