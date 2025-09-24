@@ -44,7 +44,7 @@ class SortieType extends AbstractType
             ])
             ->add('idOrganisateur', EntityType::class, [
                 'class' => Participant::class,
-                'choice_label' => 'id',
+                'choice_label' => 'pseudo',
             ])
 //            ->add('participants', EntityType::class, [
 //                'class' => Participant::class,

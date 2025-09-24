@@ -12,6 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SortieController extends AbstractController
 {
+    #[Route('/', name: 'app_default')]
+    public function defaultRoute(EntityManagerInterface $entityManager): Response
+    {
+        return $this->redirectToRoute('app_sortie_list');
+    }
     #[Route('/sorties', name: 'app_sortie_list')]
     public function list(EntityManagerInterface $entityManager): Response
     {
