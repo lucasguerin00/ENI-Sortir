@@ -58,6 +58,7 @@ class Lieu
         return $this;
     }
 
+
     public function getRue(): ?string
     {
         return $this->rue;
@@ -124,12 +125,12 @@ class Lieu
         return $this;
     }
 
-    public function getIdVille(): ?Ville
+    public function getVille(): ?Ville
     {
         return $this->idVille;
     }
 
-    public function setIdVille(?Ville $idVille): static
+    public function setVille(?Ville $idVille): static
     {
         $this->idVille = $idVille;
 
