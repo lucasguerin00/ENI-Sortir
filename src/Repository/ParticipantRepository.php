@@ -57,4 +57,14 @@ class ParticipantRepository extends ServiceEntityRepository implements PasswordU
                 ->getOneOrNullResult()
             ;
         }
+
+    public function findOneByMail($value): ?Participant
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.mail = :mail')
+            ->setParameter('mail', $value)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
+    }
 }

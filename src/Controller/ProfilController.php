@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
+use App\Form\EmailType;
 use App\Form\ParticipantType;
+use App\Form\ChangePasswordType;
 use App\Repository\ParticipantRepository;
 use App\Repository\SiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -52,10 +54,43 @@ class ProfilController extends AbstractController
             $entityManager->flush();
 
             // Redirection ou message de succès
-            return $this->redirectToRoute('profil');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('profil/addProfil.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/password', name: 'change_password')]
+    public function changePassword(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder, ParticipantRepository $participantRepository): Response
+    {
+
+        $form = $this->createForm(ChangePasswordType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $email = $form->get('mail')->getData();
+            $user = $participantRepository->findOneByMail($email);
+
+            if($user !== null){
+
+                $newPassword = $passwordEncoder->hashPassword($user, $form->get('password')->getData());;
+
+                $user->setPassword($newPassword);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Mot de passe changé avec succès.');
+
+                return $this->redirectToRoute('app_login');
+            } else {
+                $this->addFlash('error', 'Aucun utilisateur trouvé avec cet email.');
+                return $this->redirectToRoute('change_password');
+            }
+        }
+
+        return $this->render('profil/password.html.twig', [
             'form' => $form->createView(),
         ]);
     }

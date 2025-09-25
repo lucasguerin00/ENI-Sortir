@@ -7,6 +7,11 @@
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
 
         {% if app.user %}
             <div class="mb-3">
@@ -21,6 +26,9 @@
         <input type="password" name="_password" id="password" class="form-control" autocomplete="current-password" required>
         <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
+        <a href="{{ path('create_participant') }}">Créer un compte</a>
+        <a href="{{ path('change_password') }}">Mot de passe oublié</a>
+
         {#
             Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
             See https://symfony.com/doc/current/security/remember_me.html
@@ -31,8 +39,5 @@
             </div>
         #}
 
-        <button class="btn btn-lg btn-primary" type="submit">
-            Sign in
-        </button>
     </form>
 {% endblock %}
