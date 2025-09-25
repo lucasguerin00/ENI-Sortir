@@ -3,55 +3,139 @@
 {% block title %}Liste des sorties{% endblock %}
 
 {% block body %}
-    <a href="{{ path('app_sortie_new') }}">Créer une sortie</a>
+    <div class="max-w-8xl mx-auto mt-10 px-6">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Liste des sorties</h1>
 
-    <h1>Liste des sorties</h1>
+            {# Bouton de création de sortie uniquement si un user est connecté #}
+            {% if app.user %}
+                <a href="{{ path('app_sortie_new') }}" class="focus:outline-none text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 shadow">
+                    <span>Créer une sortie </span>
+                </a>
+            {% endif %}
 
-    {% if sorties is empty %}
-        <p>Aucune sortie n'a été créée pour le moment.</p>
-    {% else %}
-        <table>
-            <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Date du début</th>
-                <th>Durée (min)</th>
-                <th>Lieu</th>
-                <th>Site</th>
-                <th>Infos sur la sortie</th>
-                <th>État</th>
-                <th>Organisateur</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for sortie in sorties %}
-                <tr>
-                    <td>{{ sortie.nom }}</td>
-                    <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y H:i') : '' }}</td>
-                    <td>{{ sortie.duree }}</td>
-                    <td>{{ sortie.idLieu ? sortie.idLieu.nom : '' }}</td>
-                    <td>{{ sortie.idSite ? sortie.idSite.nom : '' }}</td>
-                    <td>{{ sortie.infosSortie ? sortie.infosSortie : '' }}</td>
-                    <td>{{ sortie.etat ? sortie.etat.libelle : '' }}</td>
-                    <td>{{ sortie.idOrganisateur ? sortie.idOrganisateur.nom : '' }}</td>
-                    <td>
-                        {# Bouton Archiver #}
-                        <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}" onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ sortie.id) }}">
-                            <button>Archiver</button>
-                        </form>
+        </div>
 
-                        {# Bouton Supprimer #}
-                        <form method="post" action="{{ path('app_sortie_delete', {id: sortie.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette sortie ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sortie.id) }}">
-                            <button>Annuler</button>
-                        </form>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
+        {% if sorties is empty %}
+            <p class="text-center text-gray-600 italic">Aucune sortie n'a été créée pour le moment.</p>
+        {% else %}
+            {# Affiche la liste des sorties sous forme de tableau #}
+            <div class="overflow-x-auto shadow-lg rounded-lg">
+                <table class="w-full border-collapse bg-white">
 
+                    {# Header du tableau avec les libellés des données #}
+                    <thead class="bg-gray-100 text-gray-700 uppercase text-sm">
+                        <tr>
+                            <th class="px-4 py-3 text-left">Nom</th>
+                            <th class="px-4 py-3 text-left">Date du début</th>
+                            <th class="px-4 py-3 text-left">Cloture</th>
+                            <th class="px-4 py-3 text-left">Durée (min)</th>
+                            <th class="px-4 py-3 text-left">Lieu</th>
+                            <th class="px-4 py-3 text-left">Site</th>
+                            <th class="px-4 py-3 text-left">Infos</th>
+                            <th class="px-4 py-3 text-left">État</th>
+                            <th class="px-4 py-3 text-left">Organisateur</th>
+                            <th class="px-4 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-200 text-sm text-gray-800">
+                        {% for sortie in sorties %}
+                            <tr class="hover:bg-gray-100 {% if app.user and sortie.idOrganisateur == app.user %}bg-gray-50{% endif %}">
+
+                            {# Affiche le détail de sortie si on clique sur le nom #}
+                                <td class="px-4 py-3">
+                                    <a href="{{ path('app_sortie_show', {id: sortie.id}) }}"
+                                       class="text-blue-600 hover:underline">
+                                        <span>{{ sortie.nom }}</span>
+                                    </a>
+                                </td>
+
+                                <td class="px-4 py-3">{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y H:i') : '' }}</td>
+                                <td class="px-4 py-3">{{ sortie.dateLimiteInscription ? sortie.dateLimiteInscription|date('d/m/Y H:i') : '' }}</td>
+                                <td class="px-4 py-3">{{ sortie.duree }}</td>
+                                <td class="px-4 py-3">{{ sortie.idLieu ? sortie.idLieu.nom : '' }}</td>
+                                <td class="px-4 py-3">{{ sortie.idSite ? sortie.idSite.nom : '' }}</td>
+                                <td class="px-4 py-3">{{ sortie.infosSortie ? sortie.infosSortie : '' }}</td>
+
+                                {# Définit un code couleur de l'état en fonction de celui-ci #}
+                                <td class="px-4 py-3">
+                                    {% if sortie.etat %}
+                                        {% set etat = sortie.etat.libelle %}
+                                        {% set color = '' %}
+
+                                        {% if etat == 'Créé' %}
+                                            {% set color = 'bg-yellow-100 text-yellow-800' %}
+                                        {% elseif etat == 'Ouverte' %}
+                                            {% set color = 'bg-green-100 text-green-800' %}
+                                        {% elseif etat == 'Clôturée' %}
+                                            {% set color = 'bg-red-100 text-red-800' %}
+                                        {% elseif etat == 'Activité en cours' %}
+                                            {% set color = 'bg-orange-100 text-orange-800' %}
+                                        {% elseif etat == 'Terminée' %}
+                                            {% set color = 'bg-gray-300 text-gray-900' %}
+                                        {% elseif etat == 'Archivée' %}
+                                            {% set color = 'bg-gray-100 text-gray-700 italic' %}
+                                        {% else %}
+                                            {% set color = 'bg-gray-50 text-gray-800' %}
+                                        {% endif %}
+
+                                        <span class="px-2 py-1 rounded-full text-xs font-semibold {{ color }}">
+                                            <span>{{ etat }}</span>
+                                        </span>
+                                    {% endif %}
+                                </td>
+
+                                <td class="px-4 py-3">
+                                    {{ sortie.idOrganisateur ? sortie.idOrganisateur.prenom : '' }} {{ sortie.idOrganisateur ? sortie.idOrganisateur.nom : '' }}
+                                </td>
+
+                                {# Action sur la sortie #}
+                                <td class="px-4 py-3 flex flex-col items-center gap-2">
+
+                                    {# Actions pour l'organisateur #}
+                                    {% if app.user and sortie.idOrganisateur == app.user %}
+                                        <a href="{{ path('app_sortie_edit', {id: sortie.id}) }}"
+                                           class="w-32 text-center px-3 py-1.5 bg-green-800 text-white text-xs rounded hover:bg-blue-600">
+                                            <span>Modifier</span>
+                                        </a>
+
+                                        <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}" onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ sortie.id) }}">
+                                            <button class="w-32 text-center px-3 py-1.5 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600">Archiver</button>
+                                        </form>
+
+                                        <form method="post" action="{{ path('app_sortie_delete', {id: sortie.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette sortie ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sortie.id) }}">
+                                            <button class="w-32 text-center px-3 py-1.5 bg-red-600 text-white text-xs rounded hover:bg-red-700">Annuler</button>
+                                        </form>
+                                    {% endif %}
+
+                                    {# Actions d'inscription/désinscription pour tout utilisateur connecté #}
+                                    {% if app.user and sortie.idOrganisateur != app.user %}
+                                        {% if sortie.participants.contains(app.user) %}
+                                            <form method="post" action="{{ path('app_sortie_desinscription', {id: sortie.id}) }}">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('desinscription' ~ sortie.id) }}">
+                                                <button class="w-32 text-center px-3 py-1.5 bg-blue-800 text-white text-xs rounded hover:bg-red-700">
+                                                    <span>Se désinscrire</span>
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('inscription' ~ sortie.id) }}">
+                                                <button class="w-32 text-center px-3 py-1.5 bg-blue-400 text-white text-xs rounded hover:bg-green-700">
+                                                    <span>S'inscrire</span>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

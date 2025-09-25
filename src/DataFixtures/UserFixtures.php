@@ -24,6 +24,7 @@ class UserFixtures extends Fixture
         $userAdmin->setTelephone("025103504");
         $userAdmin->setIsAdministrateur(1);
         $userAdmin->setIsActif(1);
+        $userAdmin->setRoles(['ROLE_ADMIN']);
         $plaintextPassword = "1234";
 
         // hash the password (based on the security.yaml config for the $user class)
@@ -43,6 +44,7 @@ class UserFixtures extends Fixture
         $userCloe->setTelephone("025103504");
         $userCloe->setIsAdministrateur(1);
         $userCloe->setIsActif(1);
+        $userCloe->setRoles(['ROLE_ADMIN']);
         $plaintextPassword = "1234";
 
         // hash the password (based on the security.yaml config for the $user class)
@@ -62,6 +64,7 @@ class UserFixtures extends Fixture
         $userLucas->setTelephone("025103504");
         $userLucas->setIsAdministrateur(1);
         $userLucas->setIsActif(1);
+        $userLucas->setRoles(['ROLE_ADMIN']);
         $plaintextPassword = "1234";
 
         // hash the password (based on the security.yaml config for the $user class)

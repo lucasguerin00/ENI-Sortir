@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de la sortie{% endblock %}
+
+{% block body %}
+    <div class="max-w-5xl mx-auto mt-10 px-6">
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold text-gray-800">{{ sortie.nom }}</h1>
+
+                {% if app.user %}
+                    {% if sortie.participants.contains(app.user) %}
+                        <a href="{{ path('app_sortie_desinscription', {id: sortie.id}) }}"
+                           class="focus:outline-none text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5 shadow">
+                            Se désinscrire
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_sortie_inscription', {id: sortie.id}) }}"
+                           class="focus:outline-none text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 shadow">
+                            S'inscrire
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-gray-700 text-sm">
+                <div>
+                    <p><span class="font-semibold">Date :</span> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</p>
+                    <p><span class="font-semibold">Durée :</span> {{ sortie.duree }} minutes</p>
+                    <p><span class="font-semibold">Date limite :</span> {{ sortie.dateLimiteInscription|date('d/m/Y H:i') }}</p>
+                    <p><span class="font-semibold">Max. participants :</span> {{ sortie.nbInscriptionMax }}</p>
+                </div>
+
+                <div>
+                    <p><span class="font-semibold">Lieu :</span> {{ sortie.idLieu ? sortie.idLieu.nom : 'Non défini' }}</p>
+                    <p><span class="font-semibold">Site :</span> {{ sortie.idSite ? sortie.idSite.nom : 'Non défini' }}</p>
+                    <p><span class="font-semibold">Organisateur :</span> {{ sortie.idOrganisateur.pseudo }}</p>
+                    <p><span class="font-semibold">Infos :</span> {{ sortie.infosSortie }}</p>
+                </div>
+            </div>
+
+            {# Affichage état avec code couleur #}
+            <div class="mt-6">
+                {% if sortie.etat %}
+                    {% set etat = sortie.etat.libelle %}
+                    {% set color = '' %}
+                    {% if etat == 'Créé' %}
+                        {% set color = 'bg-yellow-100 text-yellow-800' %}
+                    {% elseif etat == 'Ouverte' %}
+                        {% set color = 'bg-green-100 text-green-800' %}
+                    {% elseif etat == 'Clôturée' %}
+                        {% set color = 'bg-red-100 text-red-800' %}
+                    {% elseif etat == 'Activité en cours' %}
+                        {% set color = 'bg-orange-100 text-orange-800' %}
+                    {% elseif etat == 'Terminée' %}
+                        {% set color = 'bg-gray-300 text-gray-900' %}
+                    {% elseif etat == 'Archivée' %}
+                        {% set color = 'bg-gray-100 text-gray-700 italic' %}
+                    {% else %}
+                        {% set color = 'bg-gray-50 text-gray-800' %}
+                    {% endif %}
+                    <span class="px-3 py-1 rounded-full text-sm font-semibold {{ color }}">
+                    {{ etat }}
+                </span>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Liste des participants #}
+        <div class="mt-10 bg-white shadow-lg rounded-lg p-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Participants ({{ sortie.participants|length }}/{{ sortie.nbInscriptionMax }})</h2>
+            {% if sortie.participants is not empty %}
+                <ul class="divide-y divide-gray-200">
+                    {% for participant in sortie.participants %}
+                        <li class="py-2 text-gray-700">
+                            {{ participant.pseudo }} ({{ participant.prenom }} {{ participant.nom }})
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600 italic">Aucun participant inscrit pour le moment.</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
