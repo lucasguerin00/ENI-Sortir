@@ -40,4 +40,13 @@ class VilleRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function getAllVille(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->orderBy('v.nom')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

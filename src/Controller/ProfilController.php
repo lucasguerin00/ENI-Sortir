@@ -22,10 +22,10 @@ class ProfilController extends AbstractController
     #[Route('/profil', name: 'profil', methods: ['GET'])]
     public function showProfil(ParticipantRepository $participantRepository, SiteRepository $siteRepository): Response {
 
-        $participant = $participantRepository->findOneBySomeField('1');
+        $participant = $participantRepository->findOneById('1');
 
-        return $this->render('main/profil.html.twig', [
-//            'pseudo' => $participant->getPseudo(),
+        return $this->render('profil/profil.html.twig', [
+            'pseudo' => $participant->getPseudo(),
             'email' => $participant->getMail(),
             'nom' => $participant->getNom(),
             'prenom' => $participant->getPrenom(),
@@ -55,7 +55,7 @@ class ProfilController extends AbstractController
             return $this->redirectToRoute('profil');
         }
 
-        return $this->render('user/addProfil.html.twig', [
+        return $this->render('profil/addProfil.html.twig', [
             'form' => $form->createView(),
         ]);
     }

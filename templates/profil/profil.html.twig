@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<htmL lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initialscale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Profil</title>
+    </head>
+    <body>
+        <h1>{{ pseudo }}</h1>
+        <h3>Prénom :</h3> {{ prenom }}
+        <h3>Nom :</h3> {{ nom }}
+        <h3>Téléphone :</h3> {{ telephone }}
+        <h3>Email :</h3> {{ email }}
+        <h3>Ville de ratachement :</h3> {{ site }}
+
+        <a href="{{ path('app_default') }}">Retour</a>
+    </body>
+</htmL>
