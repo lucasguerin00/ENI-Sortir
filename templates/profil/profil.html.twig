@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <img src="{{ asset('/assets/images/' ~ image) }}" alt="Image profil">
+    <h1>{{ pseudo }}</h1>
+    <h3>Prénom :</h3> {{ prenom }}
+    <h3>Nom :</h3> {{ nom }}
+    <h3>Téléphone :</h3> {{ telephone }}
+    <h3>Email :</h3> {{ email }}
+    <h3>Ville de ratachement :</h3> {{ site }}
+
+    <a href="{{ path('app_default') }}">Retour</a>
+    {% if app.user.id == id  %}
+    <a href="{{ path('edit_participant', {'id': app.user.id }) }}">Modifier</a>
+    {% endif %}
+
+{% endblock %}
