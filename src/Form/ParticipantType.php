@@ -56,10 +56,19 @@ class ParticipantType extends AbstractType
                 'choice_label' => 'nom',
                 'placeholder' => 'Ville de ratachement'
             ])
-//            ->add('photo', FileType::class, [
-//                'label' => 'Télécharger la photo',
-//                'constraints' => new File()
-//            ])
+            ->add('image', FileType::class, [
+                'label' => 'Télécharger la photo',
+                'mapped' => false,
+                'constraints' => new File([
+                    'maxSize' => '10M',
+                    'mimeTypes' => [
+                        'image/jpeg',
+                        'image/png',
+                    ],
+                    'mimeTypesMessage' => 'Veuillez uploader une image JPEG ou PNG valide.',
+                ]),
+                'required' => false,
+            ])
             ->add('valider', SubmitType::class)
         ;
 

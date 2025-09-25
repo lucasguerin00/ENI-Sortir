@@ -4,6 +4,7 @@
 
 {% block body %}
     <h1>{{ editMode ? 'Modifier un utilisateur' : 'Créer un utilisateur' }}</h1>
-    {{ form_start(form) }}
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+    {{ form_widget(form) }}
     {{ form_end(form) }}
 {% endblock %}

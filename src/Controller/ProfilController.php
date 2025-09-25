@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
-use App\Form\EmailType;
 use App\Form\ParticipantType;
 use App\Form\ChangePasswordType;
 use App\Repository\ParticipantRepository;
@@ -23,18 +22,21 @@ class ProfilController extends AbstractController
     public function showProfil(int $id, ParticipantRepository $participantRepository, SiteRepository $siteRepository): Response {
 
         $participant = $participantRepository->findOneById($id);
+        $site = $siteRepository->findOneBy(['id' => $participant->getIdSite()]);
 
         return $this->render('profil/profil.html.twig', [
+            'id' => $participant->getId(),
             'pseudo' => $participant->getPseudo(),
             'email' => $participant->getMail(),
             'nom' => $participant->getNom(),
             'prenom' => $participant->getPrenom(),
             'telephone' => $participant->getTelephone(),
-            'site' => 'Nantes',
+            'site' => $site->getNom(),
+            'image' => $participant->getImage(),
         ]);
     }
 
-    #[Route('/profil/create', name: 'create_participant')]
+    #[Route('/create', name: 'create_participant')]
     public function createParticipant(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder): Response
     {
         $user = new Participant();
@@ -44,14 +46,24 @@ class ProfilController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hash le mot de passe
+            if ($form->get('image')->getData()) {
+
+                $originalFilename = $form->get('image')->getData()->getClientOriginalName();
+
+                // Déplacer le fichier dans /public/uploads pour qu'il soit accessible
+                $form->get('image')->getData()->move(
+                    $this->getParameter('images_directory'),
+                    $originalFilename
+                );
+
+                $user->setImage($originalFilename);
+            }
+
             $user->setPassword($passwordEncoder->hashPassword($user, $user->getPassword()));
 
-            // Enregistrer l'utilisateur dans la base de données
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // Redirection ou message de succès
             return $this->redirectToRoute('app_login');
         }
 
@@ -64,19 +76,29 @@ class ProfilController extends AbstractController
     #[Route('/profil/{id}/edit', name: 'edit_participant')]
     public function editParticipant(Participant $participant, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder): Response
     {
-
         $form = $this->createForm(ParticipantType::class, $participant);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hash le mot de passe
+
             if ($form->get('password')->getData()!==null){
                 $participant->setPassword($passwordEncoder->hashPassword($participant, $form->get('password')->getData()));
             }
+            if ($form->get('image')->getData()) {
+
+                $originalFilename = $form->get('image')->getData()->getClientOriginalName();
+
+                // Déplacer le fichier dans /public/uploads pour qu'il soit accessible
+                $form->get('image')->getData()->move(
+                    $this->getParameter('images_directory'),
+                    $originalFilename
+                );
+
+                $participant->setImage($originalFilename);
+            }
             $entityManager->flush();
 
-            // Redirection ou message de succès
             return $this->redirectToRoute('profil', ['id' => $participant->getId()]);
         }
 
@@ -100,7 +122,7 @@ class ProfilController extends AbstractController
 
             if($user !== null){
 
-                $newPassword = $passwordEncoder->hashPassword($user, $form->get('password')->getData());;
+                $newPassword = $passwordEncoder->hashPassword($user, $form->get('password')->getData());
 
                 $user->setPassword($newPassword);
                 $entityManager->flush();

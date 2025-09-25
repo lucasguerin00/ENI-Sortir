@@ -44,6 +44,8 @@ security:
         - { path: ^/register, roles: PUBLIC_ACCESS }
         - { path: ^/logout, roles: PUBLIC_ACCESS }
         - { path: ^/sorties, roles: PUBLIC_ACCESS }
+        - { path: ^/password, roles: PUBLIC_ACCESS }
+        - { path: ^/create, roles: PUBLIC_ACCESS }
         - { path: ^/$, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: ROLE_USER }
 
