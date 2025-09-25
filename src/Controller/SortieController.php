@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Etat;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -22,7 +23,13 @@ class SortieController extends AbstractController
     #[Route('/sorties', name: 'app_sortie_list')]
     public function list(EntityManagerInterface $entityManager): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAllActive();
+        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+
+        // Met à jour l’état de chaque sortie avant affichage
+        foreach ($sorties as $sortie) {
+            $this->updateEtat($sortie, $entityManager);
+        }
+        $entityManager->flush();
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,
@@ -37,9 +44,7 @@ class SortieController extends AbstractController
 
         // Récupère l'utilisateur connecté
         $user = $this->getUser();
-
         if ($user) {
-            // Assigne l'organisateur à l'utilisateur connecté
             $sortie->setIdOrganisateur($user);
         }
 
@@ -47,6 +52,9 @@ class SortieController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Calcule et affecte l’état automatiquement
+            $this->updateEtat($sortie, $entityManager);
+
             $entityManager->persist($sortie);
             $entityManager->flush();
 
@@ -62,8 +70,11 @@ class SortieController extends AbstractController
 
     // Affiche une sortie
     #[Route('/sortie/{id}', name: 'app_sortie_show')]
-    public function show(Sortie $sortie): Response
+    public function show(Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
+        $this->updateEtat($sortie, $entityManager);
+        $entityManager->flush();
+
         return $this->render('sortie/show.html.twig', [
             'sortie' => $sortie,
         ]);
@@ -78,10 +89,18 @@ class SortieController extends AbstractController
             throw $this->createAccessDeniedException('Vous ne pouvez modifier que vos propres sorties.');
         }
 
+        if ($sortie->getEtat()->getLibelle() !== 'Ouvert') {
+            $this->addFlash('error', "La sortie n'est plus modifiable car elle n'est plus ouverte.");
+            return $this->redirectToRoute('app_sortie_list');
+        }
+
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Recalcule et met à jour l’état
+            $this->updateEtat($sortie, $entityManager);
+
             $entityManager->flush();
 
             $this->addFlash('success', 'Sortie modifiée avec succès !');
@@ -105,7 +124,7 @@ class SortieController extends AbstractController
         }
 
         // Vérifie le token CSRF pour éviter l'annulation accidentelle
-        if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $sortie->getId(), $request->request->get('_token'))) {
             $entityManager->remove($sortie);
             $entityManager->flush();
 
@@ -124,7 +143,7 @@ class SortieController extends AbstractController
             throw $this->createAccessDeniedException('Vous ne pouvez archivé que vos propres sorties.');
         }
 
-        if ($this->isCsrfTokenValid('archive'.$sortie->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('archive' . $sortie->getId(), $request->request->get('_token'))) {
             $sortie->setIsArchived(true);
             $sortie->setArchivedAt(new \DateTime());
             $entityManager->flush();
@@ -189,6 +208,34 @@ class SortieController extends AbstractController
         return $this->redirectToRoute('app_sortie_show', ['id' => $sortie->getId()]);
     }
 
+    /**
+     * Met à jour automatiquement l’état d’une sortie
+     */
+    private function updateEtat(Sortie $sortie, EntityManagerInterface $entityManager): void
+    {
+        $now = new \DateTime();
+        $dateDebut = $sortie->getDateHeureDebut();
+        $dateCloture = $sortie->getDateLimiteInscription();
+        $dateFin = (clone $dateDebut)->modify("+{$sortie->getDuree()} minutes");
 
+        $etatLibelle = null;
 
+        if ($now < $dateCloture) {
+            $etatLibelle = 'Ouvert';
+        } elseif ($now >= $dateCloture && $now < $dateDebut) {
+            $etatLibelle = 'Fermée';
+        } elseif ($now >= $dateDebut && $now <= $dateFin) {
+            $etatLibelle = 'En cours';
+        } elseif ($now > $dateFin) {
+            $etatLibelle = 'Terminée';
+        } else {
+            $etatLibelle = 'En création';
+        }
+
+        $etat = $entityManager->getRepository(Etat::class)->findOneBy(['libelle' => $etatLibelle]);
+
+        if ($etat) {
+            $sortie->setEtat($etat);
+        }
+    }
 }

@@ -30,27 +30,30 @@ class SortieType extends AbstractType
             ])
             ->add('nbInscriptionMax', IntegerType::class)
             ->add('infosSortie', TextType::class)
-//            ->add('idSite', EntityType::class, [
-//                'class' => Site::class,
-//                'choice_label' => 'nom',
-//            ])
-//            ->add('idLieu', EntityType::class, [
-//                'class' => Lieu::class,
-//                'choice_label' => 'nom',
-//            ])
-            ->add('etat', EntityType::class, [
-                'class' => Etat::class,
-                'choice_label' => 'libelle'
+            ->add('idSite', EntityType::class, [
+                'class' => Site::class,
+                'choice_label' => 'nom',
+            ])
+            ->add('idLieu', EntityType::class, [
+                'class' => Lieu::class,
+                'choice_label' => 'nom',
+            ])
+            ->add('rue', TextType::class, [
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('latitude', TextType::class, [
+                'mapped' => false,
+                'required' => false,
+            ])
+            ->add('longitude', TextType::class, [
+                'mapped' => false,
+                'required' => false,
             ])
             ->add('idOrganisateur', EntityType::class, [
                 'class' => Participant::class,
                 'choice_label' => 'pseudo',
             ])
-//            ->add('participants', EntityType::class, [
-//                'class' => Participant::class,
-//                'choice_label' => 'id',
-//                'multiple' => true,
-//            ])
         ;
     }
 
