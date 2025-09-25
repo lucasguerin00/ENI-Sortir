@@ -43,7 +43,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $telephone = null;
 
     #[ORM\Column]
-    private ?bool $isAdministrateur = null;
+    private bool $isAdministrateur = false;
 
     #[ORM\Column]
     private ?bool $isActif = null;
