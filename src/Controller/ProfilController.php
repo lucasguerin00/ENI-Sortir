@@ -17,14 +17,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProfilController extends AbstractController
 {
-    private Security $security;
-
     public function __construct() {}
 
-    #[Route('/profil', name: 'profil', methods: ['GET'])]
-    public function showProfil(ParticipantRepository $participantRepository, SiteRepository $siteRepository): Response {
+    #[Route('/profil/{id}', name: 'profil', methods: ['GET'])]
+    public function showProfil(int $id, ParticipantRepository $participantRepository, SiteRepository $siteRepository): Response {
 
-        $participant = $participantRepository->findOneById('1');
+        $participant = $participantRepository->findOneById($id);
 
         return $this->render('profil/profil.html.twig', [
             'pseudo' => $participant->getPseudo(),
@@ -37,7 +35,7 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/profil/create', name: 'create_participant')]
-    public function create(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder): Response
+    public function createParticipant(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder): Response
     {
         $user = new Participant();
 
@@ -59,6 +57,32 @@ class ProfilController extends AbstractController
 
         return $this->render('profil/addProfil.html.twig', [
             'form' => $form->createView(),
+            'editMode' => false,
+        ]);
+    }
+
+    #[Route('/profil/{id}/edit', name: 'edit_participant')]
+    public function editParticipant(Participant $participant, Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordEncoder): Response
+    {
+
+        $form = $this->createForm(ParticipantType::class, $participant);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Hash le mot de passe
+            if ($form->get('password')->getData()!==null){
+                $participant->setPassword($passwordEncoder->hashPassword($participant, $form->get('password')->getData()));
+            }
+            $entityManager->flush();
+
+            // Redirection ou message de succès
+            return $this->redirectToRoute('profil', ['id' => $participant->getId()]);
+        }
+
+        return $this->render('profil/addProfil.html.twig', [
+            'form' => $form->createView(),
+            'editMode' => true
         ]);
     }
 

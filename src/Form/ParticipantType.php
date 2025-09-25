@@ -44,6 +44,8 @@ class ParticipantType extends AbstractType
                     new Assert\Length(['min' => 8, 'max' => 255])]
             ])
             ->add('password', RepeatedType::class, [
+                'required' => false,
+                'mapped' => false,
                 'type' => PasswordType::class,
                 'first_options' => ['label' => 'Mot de passe'],
                 'second_options' => ['label' => 'Confirmation mot de passe'],
