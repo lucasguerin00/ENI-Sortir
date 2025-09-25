@@ -3,10 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Participant;
-use App\Entity\Ville;
+use App\Entity\Site;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -51,7 +50,7 @@ class ParticipantType extends AbstractType
                 'invalid_message' => 'Les mots de passe ne correspondent pas.'
             ])
             ->add('idSite', EntityType::class, [
-                'class' => Ville::class,
+                'class' => Site::class,
                 'choice_label' => 'nom',
                 'placeholder' => 'Ville de ratachement'
             ])
