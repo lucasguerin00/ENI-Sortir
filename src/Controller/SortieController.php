@@ -60,6 +60,11 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}/edit', name: 'app_sortie_edit')]
     public function edit(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
+        // Vérifie que l'utilisateur est connecté et organisateur
+        if ($this->getUser() !== $sortie->getIdOrganisateur()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez modifier que vos propres sorties.');
+        }
+
         $form = $this->createForm(SortieType::class, $sortie);
         $form->handleRequest($request);
 
@@ -80,6 +85,11 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}/delete', name: 'app_sortie_delete', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
+        // Vérifie que l'utilisateur est connecté et organisateur
+        if ($this->getUser() !== $sortie->getIdOrganisateur()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez annulé que vos propres sorties.');
+        }
+
         // Vérifie le token CSRF pour éviter l'annulation accidentelle
         if ($this->isCsrfTokenValid('delete'.$sortie->getId(), $request->request->get('_token'))) {
             $entityManager->remove($sortie);
@@ -94,6 +104,11 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}/archive', name: 'app_sortie_archive', methods: ['POST'])]
     public function archive(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
+        // Vérifie que l'utilisateur est connecté et organisateur
+        if ($this->getUser() !== $sortie->getIdOrganisateur()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez archivé que vos propres sorties.');
+        }
+
         if ($this->isCsrfTokenValid('archive'.$sortie->getId(), $request->request->get('_token'))) {
             $sortie->setIsArchived(true);
             $sortie->setArchivedAt(new \DateTime());
