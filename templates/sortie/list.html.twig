@@ -39,7 +39,14 @@
                         {% for sortie in sorties %}
                             <tr class="hover:bg-gray-50">
 
-                                <td class="px-4 py-3">{{ sortie.nom }}</td>
+                                {# Affiche le détail de sortie si on clique sur le nom #}
+                                <td class="px-4 py-3">
+                                    <a href="{{ path('app_sortie_show', {id: sortie.id}) }}"
+                                       class="text-blue-600 hover:underline">
+                                        {{ sortie.nom }}
+                                    </a>
+                                </td>
+
                                 <td class="px-4 py-3">{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y H:i') : '' }}</td>
                                 <td class="px-4 py-3">{{ sortie.duree }}</td>
                                 <td class="px-4 py-3">{{ sortie.idLieu ? sortie.idLieu.nom : '' }}</td>
@@ -78,11 +85,12 @@
                                     {{ sortie.idOrganisateur ? sortie.idOrganisateur.prenom : '' }} {{ sortie.idOrganisateur ? sortie.idOrganisateur.nom : '' }}
                                 </td>
 
-                                {# Actions #}
-                                {% if app.user and sortie.idOrganisateur == app.user %}
-                                    <td class="px-4 py-3 flex gap-2 justify-center">
+                                {# Action sur la sortie #}
+                                <td class="px-4 py-3 flex gap-2 justify-center">
+                                    {# Actions pour l'organisateur #}
+                                    {% if app.user and sortie.idOrganisateur == app.user %}
                                         <a href="{{ path('app_sortie_edit', {id: sortie.id}) }}"
-                                           class="px-3 py-1.5 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">
+                                           class="px-3 py-1.5 bg-green-800 text-white text-xs rounded hover:bg-blue-600">
                                             Modifier
                                         </a>
 
@@ -95,8 +103,27 @@
                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sortie.id) }}">
                                             <button class="px-3 py-1.5 bg-red-600 text-white text-xs rounded hover:bg-red-700">Annuler</button>
                                         </form>
-                                    </td>
-                                {% endif %}
+                                    {% endif %}
+
+                                    {# Actions d'inscription/désinscription pour tout utilisateur connecté #}
+                                    {% if app.user and sortie.idOrganisateur != app.user %}
+                                        {% if sortie.participants.contains(app.user) %}
+                                            <form method="post" action="{{ path('app_sortie_desinscription', {id: sortie.id}) }}">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('desinscription' ~ sortie.id) }}">
+                                                <button class="px-3 py-1.5 bg-blue-800 text-white text-xs rounded hover:bg-red-700">
+                                                    Se désinscrire
+                                                </button>
+                                            </form>
+                                        {% else %}
+                                            <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('inscription' ~ sortie.id) }}">
+                                                <button class="px-3 py-1.5 bg-blue-400 text-white text-xs rounded hover:bg-green-700">
+                                                    S'inscrire
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
 
                             </tr>
                         {% endfor %}
