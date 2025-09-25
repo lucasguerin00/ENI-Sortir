@@ -48,6 +48,11 @@
 
                                 {# Actions #}
                                 <td class="px-4 py-3 flex gap-2 justify-center">
+                                    <a href="{{ path('app_sortie_edit', {id: sortie.id}) }}"
+                                       class="px-3 py-1.5 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">
+                                        Modifier
+                                    </a>
+
                                     <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}" onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ sortie.id) }}">
                                         <button class="px-3 py-1.5 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600">Archiver</button>

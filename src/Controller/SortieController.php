@@ -57,6 +57,26 @@ class SortieController extends AbstractController
         ]);
     }
 
+    #[Route('/sortie/{id}/edit', name: 'app_sortie_edit')]
+    public function edit(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(SortieType::class, $sortie);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Sortie modifiée avec succès !');
+
+            return $this->redirectToRoute('app_sortie_list');
+        }
+
+        return $this->render('sortie/edit.html.twig', [
+            'form' => $form->createView(),
+            'sortie' => $sortie,
+        ]);
+    }
+
     #[Route('/sortie/{id}/delete', name: 'app_sortie_delete', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
