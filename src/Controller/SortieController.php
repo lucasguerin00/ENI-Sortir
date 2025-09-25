@@ -29,15 +29,6 @@ class SortieController extends AbstractController
         ]);
     }
 
-    // Affiche une sortie
-    #[Route('/sortie/{id}', name: 'app_sortie_show')]
-    public function show(Sortie $sortie): Response
-    {
-        return $this->render('sortie/show.html.twig', [
-            'sortie' => $sortie,
-        ]);
-    }
-
     // Affiche le formulaire de création des sorties
     #[Route('/sortie/new', name: 'app_sortie_new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -66,6 +57,15 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/new.html.twig', [
             'form' => $form->createView(),
+        ]);
+    }
+
+    // Affiche une sortie
+    #[Route('/sortie/{id}', name: 'app_sortie_show')]
+    public function show(Sortie $sortie): Response
+    {
+        return $this->render('sortie/show.html.twig', [
+            'sortie' => $sortie,
         ]);
     }
 
