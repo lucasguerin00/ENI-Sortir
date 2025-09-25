@@ -15,9 +15,6 @@ class Sortie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
-    private ?int $idSortie = null;
-
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
@@ -54,6 +51,12 @@ class Sortie
     #[ORM\ManyToMany(targetEntity: Participant::class, inversedBy: 'sortiesInscrit')]
     private Collection $participants;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isArchived = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $archivedAt = null;
+
     public function __construct()
     {
         $this->participants = new ArrayCollection();
@@ -62,18 +65,6 @@ class Sortie
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getIdSortie(): ?int
-    {
-        return $this->idSortie;
-    }
-
-    public function setIdSortie(int $idSortie): static
-    {
-        $this->idSortie = $idSortie;
-
-        return $this;
     }
 
     public function getNom(): ?string
@@ -216,6 +207,30 @@ class Sortie
     public function removeParticipant(Participant $participant): static
     {
         $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+    public function isArchived(): ?bool
+    {
+        return $this->isArchived;
+    }
+
+    public function setIsArchived(?bool $isArchived): static
+    {
+        $this->isArchived = $isArchived;
+
+        return $this;
+    }
+
+    public function getArchivedAt(): ?\DateTime
+    {
+        return $this->archivedAt;
+    }
+
+    public function setArchivedAt(?\DateTime $archivedAt): static
+    {
+        $this->archivedAt = $archivedAt;
 
         return $this;
     }

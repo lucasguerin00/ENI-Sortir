@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des sorties{% endblock %}
+
+{% block body %}
+    <a href="{{ path('app_sortie_new') }}">Créer une sortie</a>
+
+    <h1>Liste des sorties</h1>
+
+    {% if sorties is empty %}
+        <p>Aucune sortie n'a été créée pour le moment.</p>
+    {% else %}
+        <table>
+            <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Date du début</th>
+                <th>Durée (min)</th>
+                <th>Lieu</th>
+                <th>Site</th>
+                <th>Infos sur la sortie</th>
+                <th>État</th>
+                <th>Organisateur</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for sortie in sorties %}
+                <tr>
+                    <td>{{ sortie.nom }}</td>
+                    <td>{{ sortie.dateHeureDebut ? sortie.dateHeureDebut|date('d/m/Y H:i') : '' }}</td>
+                    <td>{{ sortie.duree }}</td>
+                    <td>{{ sortie.idLieu ? sortie.idLieu.nom : '' }}</td>
+                    <td>{{ sortie.idSite ? sortie.idSite.nom : '' }}</td>
+                    <td>{{ sortie.infosSortie ? sortie.infosSortie : '' }}</td>
+                    <td>{{ sortie.etat ? sortie.etat.libelle : '' }}</td>
+                    <td>{{ sortie.idOrganisateur ? sortie.idOrganisateur.nom : '' }}</td>
+                    <td>
+                        {# Bouton Archiver #}
+                        <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}" onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ sortie.id) }}">
+                            <button>Archiver</button>
+                        </form>
+
+                        {# Bouton Supprimer #}
+                        <form method="post" action="{{ path('app_sortie_delete', {id: sortie.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette sortie ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sortie.id) }}">
+                            <button>Annuler</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+{% endblock %}

@@ -16,6 +16,15 @@ class SortieRepository extends ServiceEntityRepository
         parent::__construct($registry, Sortie::class);
     }
 
+    public function findAllActive(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.isArchived = :archived OR s.isArchived IS NULL')
+            ->setParameter('archived', false)
+            ->getQuery()
+            ->getResult();
+    }
+    
     //    /**
     //     * @return Sortie[] Returns an array of Sortie objects
     //     */
