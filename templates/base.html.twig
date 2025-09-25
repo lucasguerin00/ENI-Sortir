@@ -1,15 +1,79 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <title>{% block title %}Dashboard{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
         {% block stylesheets %}
             <script src="https://cdn.tailwindcss.com"></script>
         {% endblock %}
-
     </head>
-    <body>
-        {% block body %}{% endblock %}
+
+    <body class="bg-gray-100">
+        <div class="flex h-screen">
+
+            {# --- Sidebar --- #}
+            <aside class="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-6 space-y-8 shadow-md">
+
+                <!-- Lieu -->
+                <a href="{{ path('app_lieu') }}" class="group relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-7.333 8-13a8 8 0 10-16 0c0 5.667 8 13 8 13z" />
+                    </svg>
+                    <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition">
+                        Lieux
+                    </span>
+                </a>
+
+                <!-- Ville -->
+                <a href="{{ path('app_ville') }}" class="group relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4a2 2 0 012-2h3V7a2 2 0 012-2h4a2 2 0 012 2v8h3a2 2 0 012 2v4" />
+                    </svg>
+                    <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition">
+                        Villes
+                    </span>
+                </a>
+
+                {# Futures autres icones/route #}
+            </aside>
+
+            {# --- Zone de droite avec header + contenu --- #}
+            <div class="flex-1 flex flex-col">
+
+                {# --- Header --- #}
+                <header class="bg-white shadow-md">
+                    <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+                        <!-- Logo + Nom appli -->
+                        <div class="flex items-center space-x-3">
+                            <a href="{{ path('app_sortie_list') }}" class="text-xl font-bold text-gray-800">ENI-Sortir.com</a>
+                        </div>
+
+                        <!-- Zone connexion / utilisateur -->
+                        <div>
+                            {% if app.user %}
+                                <span class="text-gray-700 mr-4">
+                                Bonjour, <strong>{{ app.user.prenom }} {{ app.user.nom }}</strong>
+                            </span>
+                                <a href="{{ path('app_logout') }}"
+                                   class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition">
+                                    Déconnexion
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_login') }}"
+                                   class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition">
+                                    Connexion
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </header>
+
+                {# --- Contenu principal --- #}
+                <main class="flex-1 p-6 overflow-y-auto">
+                    {% block body %}{% endblock %}
+                </main>
+            </div>
     </body>
 </html>
