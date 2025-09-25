@@ -1,7 +1,14 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Se connecter/S'inscrire{% endblock %}
-
+{#{% extends 'base.html.twig' %}#}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Se connecter/S'inscrire{% endblock %}</title>
+    {% block javascripts %}{% endblock %}
+    {% block stylesheets %}
+        <script src="https://cdn.tailwindcss.com"></script>
+    {% endblock %}</head>
+<body>
 {% block body %}
     <div class="flex items-center justify-center min-h-screen bg-gray-100">
         <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
@@ -52,3 +59,5 @@
         </div>
     </div>
 {% endblock %}
+</body>
+</html>
