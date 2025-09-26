@@ -7,14 +7,27 @@
         <div class="flex justify-between items-center mb-5">
             <h1 class="text-3xl font-bold text-gray-800">Liste des sorties</h1>
 
-            {# Bouton de création de sortie uniquement si un user est connecté #}
-            {% if app.user %}
-                <a href="{{ path('app_sortie_new') }}"
-                   class="focus:outline-none text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 shadow">
-                    <span>Créer une sortie </span>
-                </a>
-            {% endif %}
+            {# Bouton création sortie si connecté #}
+            <div class="flex items-center gap-4">
+                <form method="get" action="{{ path('app_sortie_list') }}">
+                    <select name="filter" class="border rounded px-3 py-2 text-sm"
+                            onchange="this.form.submit()">
+                        <option value="all" {% if filter == 'all' %}selected{% endif %}>Toutes les sorties</option>
+                        <option value="mine" {% if filter == 'mine' %}selected{% endif %}>Les sorties que j'organise</option>
+                        <option value="inscrit" {% if filter == 'inscrit' %}selected{% endif %}>Sorties où je suis inscrit</option>
+                        <option value="non_inscrit" {% if filter == 'non_inscrit' %}selected{% endif %}>Sorties où je ne suis pas inscrit</option>
+                    </select>
+                </form>
+
+                {% if app.user %}
+                    <a href="{{ path('app_sortie_new') }}"
+                       class="focus:outline-none text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 shadow">
+                        <span>Créer une sortie </span>
+                    </a>
+                {% endif %}
+            </div>
         </div>
+
 
         {% if sorties is empty %}
             <p class="text-center text-gray-600 italic">Aucune sortie n'a été créée pour le moment.</p>
