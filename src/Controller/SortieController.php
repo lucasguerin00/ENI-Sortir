@@ -21,11 +21,26 @@ class SortieController extends AbstractController
 
     // Affiche la liste des sorties
     #[Route('/sorties', name: 'app_sortie_list')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+        $filter = $request->query->get('filter', 'all'); // all par défaut
+        $user = $this->getUser();
 
-        // Met à jour l’état de chaque sortie avant affichage
+        $repo = $entityManager->getRepository(Sortie::class);
+        $sorties = $repo->findAll();
+
+        // Application des filtres côté PHP
+        if ($user) {
+            if ($filter === 'mine') {
+                $sorties = array_filter($sorties, fn(Sortie $s) => $s->getIdOrganisateur() === $user);
+            } elseif ($filter === 'inscrit') {
+                $sorties = array_filter($sorties, fn(Sortie $s) => $s->getParticipants()->contains($user));
+            } elseif ($filter === 'non_inscrit') {
+                $sorties = array_filter($sorties, fn(Sortie $s) => !$s->getParticipants()->contains($user));
+            }
+        }
+
+        // Mise à jour des états avant affichage
         foreach ($sorties as $sortie) {
             $this->updateEtat($sortie, $entityManager);
         }
@@ -33,6 +48,7 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,
+            'filter' => $filter
         ]);
     }
 
