@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Repository\ParticipantRepository;
+use CsvUploadType;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
@@ -47,6 +49,26 @@ final class AdminController extends AbstractController
         $entityManager->persist($utilisateur);
         $entityManager->flush();
         return $this->redirectToRoute('app_admin');
+    }
+
+    #[Route('/upload-csv', name: 'upload_csv')]
+    public function uploadCsv(Request $request, EntityManagerInterface $em): Response
+    {
+
+        $form = $this->createForm(CsvUploadType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $form->get('csv_file')->getData();
+
+            if($file) {
+
+                $handle = fopen($file->getPathname(), 'r');
+
+                dump($handle);
+
+            }
+        }
     }
 
 
