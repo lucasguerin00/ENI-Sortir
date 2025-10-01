@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Rappel de sortie</title>
+    </head>
+    <body>
+        <h2>Bonjour {{ participant.prenom }} {{ participant.nom }},</h2>
+
+        <p>Ceci est un petit rappel : la sortie <strong>{{ sortie.nom }}</strong> aura lieu dans moins de 24h !</p>
+
+        <ul>
+            <li><strong>📅 Date :</strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</li>
+            <li><strong>⏱ Durée :</strong> {{ sortie.duree }} minutes</li>
+            <li><strong>📍 Lieu :</strong> {{ sortie.idLieu.nom ?? 'Non renseigné' }}</li>
+            <li><strong>👥 Participants inscrits :</strong> {{ sortie.participants|length }} / {{ sortie.nbInscriptionMax }}</li>
+            <li><strong>👤 Organisateur :</strong> {{ sortie.idOrganisateur.prenom }} {{ sortie.idOrganisateur.nom }}</li>
+        </ul>
+
+        <p>On espère t’y voir</p>
+    </body>
+</html>

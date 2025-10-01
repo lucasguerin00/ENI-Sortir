@@ -43,10 +43,14 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $telephone = null;
 
     #[ORM\Column]
-    private ?bool $isAdministrateur = null;
+    private bool $isAdministrateur = false;
 
     #[ORM\Column]
-    private ?bool $isActif = null;
+    private bool $isActif = true;
+
+    #[ORM\Column(length: 255)]
+    private ?string $image = null;
+
 
     /**
      * @var Collection<int, Sortie>
@@ -63,7 +67,7 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToOne(inversedBy: 'participants')]
     private ?Site $idSite = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 50)]
     private ?string $pseudo = null;
 
     public function __construct()
@@ -287,9 +291,21 @@ class Participant implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->pseudo;
     }
 
-    public function setPseudo(string $pseudo): static
+    public function setPseudo(?string $pseudo): static
     {
         $this->pseudo = $pseudo;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
 
         return $this;
     }

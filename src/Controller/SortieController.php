@@ -3,12 +3,16 @@
 namespace App\Controller;
 
 use App\Entity\Etat;
+use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class SortieController extends AbstractController
@@ -21,11 +25,35 @@ class SortieController extends AbstractController
 
     // Affiche la liste des sorties
     #[Route('/sorties', name: 'app_sortie_list')]
-    public function list(EntityManagerInterface $entityManager): Response
+    public function list(Request $request, EntityManagerInterface $entityManager): Response
     {
-        $sorties = $entityManager->getRepository(Sortie::class)->findAll();
+        $filter = $request->query->get('filter', 'all'); // all par défaut
+        $siteFilter = $request->query->get('site', 'all'); // all par défaut
+        $user = $this->getUser();
 
-        // Met à jour l’état de chaque sortie avant affichage
+        $repo = $entityManager->getRepository(Sortie::class);
+        $sorties = $repo->findAll();
+
+        // Application des filtres côté PHP
+        if ($user) {
+            if ($filter === 'mine') {
+                $sorties = array_filter($sorties, fn(Sortie $s) => $s->getIdOrganisateur() === $user);
+            } elseif ($filter === 'inscrit') {
+                $sorties = array_filter($sorties, fn(Sortie $s) => $s->getParticipants()->contains($user));
+            } elseif ($filter === 'non_inscrit') {
+                $sorties = array_filter($sorties, fn(Sortie $s) => !$s->getParticipants()->contains($user));
+            }
+        }
+
+        // Filtre par ville
+        if ($siteFilter !== 'all') {
+            $sorties = array_filter($sorties, fn(Sortie $s) => $s->getIdSite() && $s->getIdSite()->getId() == $siteFilter);
+        }
+
+        // Récupération de tous les sites pour alimenter le select
+        $sites = $entityManager->getRepository(Site::class)->findAll();
+
+        // Mise à jour des états avant affichage
         foreach ($sorties as $sortie) {
             $this->updateEtat($sortie, $entityManager);
         }
@@ -33,8 +61,12 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,
+            'filter' => $filter,
+            'siteFilter' => $siteFilter,
+            'sites' => $sites,
         ]);
     }
+
 
     // Affiche le formulaire de création des sorties
     #[Route('/sortie/new', name: 'app_sortie_new')]
@@ -156,7 +188,7 @@ class SortieController extends AbstractController
 
     //Gère l'inscription à une sortie
     #[Route('/sortie/{id}/inscription', name: 'app_sortie_inscription')]
-    public function inscription(Sortie $sortie, EntityManagerInterface $entityManager): Response
+    public function inscription(Sortie $sortie, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $user = $this->getUser();
 
@@ -180,14 +212,30 @@ class SortieController extends AbstractController
         $sortie->addParticipant($user);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Inscription réussie !');
+        // ENVOI DU MAIL
+        $email = (new TemplatedEmail())
+            ->from('no-reply@sortir.com')
+            ->to($user->getMail())
+            ->subject('Inscription à la sortie « '.$sortie->getNom().' »')
+            ->htmlTemplate('emails/inscription.html.twig')
+            ->context([
+                'participant' => $user,
+                'sortie' => $sortie,
+            ]);
 
+        try {
+            $mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            $this->addFlash('error', 'Le mail de confirmation n’a pas pu être envoyé.');
+        }
+
+        $this->addFlash('success', 'Inscription réussie !');
         return $this->redirectToRoute('app_sortie_show', ['id' => $sortie->getId()]);
     }
 
     //Gère la désinscription à une sortie
     #[Route('/sortie/{id}/desinscription', name: 'app_sortie_desinscription')]
-    public function desinscription(Sortie $sortie, EntityManagerInterface $entityManager): Response
+    public function desinscription(Sortie $sortie, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
         $user = $this->getUser();
 
@@ -200,11 +248,28 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('app_sortie_show', ['id' => $sortie->getId()]);
         }
 
+        // Retirer l’utilisateur
         $sortie->removeParticipant($user);
         $entityManager->flush();
 
-        $this->addFlash('success', 'Vous vous êtes désinscrit de la sortie.');
+        // ENVOI DU MAIL
+        $email = (new TemplatedEmail())
+            ->from('no-reply@sortir.com')
+            ->to($user->getMail())
+            ->subject('Désinscription à la sortie « '.$sortie->getNom().' »')
+            ->htmlTemplate('emails/desinscription.html.twig')
+            ->context([
+                'participant' => $user,
+                'sortie' => $sortie,
+            ]);
 
+        try {
+            $mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+            $this->addFlash('error', 'Le mail de désinscription n’a pas pu être envoyé.');
+        }
+
+        $this->addFlash('success', 'Vous vous êtes désinscrit de la sortie.');
         return $this->redirectToRoute('app_sortie_show', ['id' => $sortie->getId()]);
     }
 

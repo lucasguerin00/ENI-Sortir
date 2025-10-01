@@ -7,14 +7,40 @@
         <div class="flex justify-between items-center mb-5">
             <h1 class="text-3xl font-bold text-gray-800">Liste des sorties</h1>
 
-            {# Bouton de création de sortie uniquement si un user est connecté #}
-            {% if app.user %}
-                <a href="{{ path('app_sortie_new') }}"
-                   class="focus:outline-none text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 shadow">
-                    <span>Créer une sortie </span>
-                </a>
-            {% endif %}
+            <div class="flex items-center gap-4">
+                <form method="get" action="{{ path('app_sortie_list') }}" class="flex gap-3">
+                    {# Sélecteur des villes #}
+                    <select name="site" class="border rounded px-3 py-2 text-sm"
+                            onchange="this.form.submit()">
+                        <option value="all" {% if siteFilter == 'all' %}selected{% endif %}>Toutes les villes</option>
+                        {% for site in sites %}
+                            <option value="{{ site.id }}" {% if siteFilter == site.id %}selected{% endif %}>
+                                {{ site.nom }}
+                            </option>
+                        {% endfor %}
+                    </select>
+
+                    {# Sélecteur du type de filtre #}
+                    {% if app.user %}
+                        <select name="filter" class="border rounded px-3 py-2 text-sm"
+                                onchange="this.form.submit()">
+                            <option value="all" {% if filter == 'all' %}selected{% endif %}>Toutes les sorties</option>
+                            <option value="mine" {% if filter == 'mine' %}selected{% endif %}>Les sorties que j'organise</option>
+                            <option value="inscrit" {% if filter == 'inscrit' %}selected{% endif %}>Sorties où je suis inscrit</option>
+                            <option value="non_inscrit" {% if filter == 'non_inscrit' %}selected{% endif %}>Sorties où je ne suis pas inscrit</option>
+                        </select>
+                    {% endif %}
+                </form>
+
+                {% if app.user %}
+                    <a href="{{ path('app_sortie_new') }}"
+                       class="focus:outline-none text-white bg-green-600 hover:bg-green-700 font-medium rounded-lg text-sm px-5 py-2.5 shadow">
+                        Créer une sortie
+                    </a>
+                {% endif %}
+            </div>
         </div>
+    </div>
 
         {% if sorties is empty %}
             <p class="text-center text-gray-600 italic">Aucune sortie n'a été créée pour le moment.</p>
@@ -36,7 +62,7 @@
                         <th class="px-4 py-3 text-left">Inscriptions</th>
                         <th class="px-4 py-3 text-left">État</th>
                         <th class="px-4 py-3 text-left">Organisateur</th>
-                        <th class="px-4 py-3 text-center">Actions</th>
+                        {% if app.user %}<th class="px-4 py-3 text-center">Actions</th>{% endif %}
                     </tr>
                     </thead>
 
@@ -96,68 +122,69 @@
                             </td>
 
                             {# Action sur la sortie #}
-                            <td class="px-4 py-3 flex flex-col items-center gap-2">
+                            {% if app.user %}
+                                <td class="px-4 py-3 flex flex-col items-center gap-2">
 
-                                {# Actions pour l'organisateur #}
-                                {% if app.user and sortie.idOrganisateur == app.user %}
-                                    {% if sortie.etat and sortie.etat.libelle == 'Ouvert' %}
-                                        <a href="{{ path('app_sortie_edit', {id: sortie.id}) }}"
-                                           class="w-32 text-center px-3 py-1.5 bg-green-800 text-white text-xs rounded hover:bg-blue-600">
-                                            <span>Modifier</span>
-                                        </a>
-                                    {% endif %}
+                                    {# Actions pour l'organisateur #}
+                                    {% if sortie.idOrganisateur == app.user %}
+                                        {% if sortie.etat and sortie.etat.libelle == 'Ouvert' %}
+                                            <a href="{{ path('app_sortie_edit', {id: sortie.id}) }}"
+                                               class="w-32 text-center px-3 py-1.5 bg-green-800 text-white text-xs rounded hover:bg-blue-600">
+                                                <span>Modifier</span>
+                                            </a>
+                                        {% endif %}
 
-                                    <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}"
-                                          onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">
-                                        <input type="hidden" name="_token"
-                                               value="{{ csrf_token('archive' ~ sortie.id) }}">
-                                        <button
-                                            class="w-32 text-center px-3 py-1.5 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600">
-                                            Archiver
-                                        </button>
-                                    </form>
-
-                                    {% if sortie.etat and (sortie.etat.libelle == 'Ouvert' or sortie.etat.libelle == 'En cours') %}
-                                        <form method="post" action="{{ path('app_sortie_delete', {id: sortie.id}) }}"
-                                              onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette sortie ?');">
+                                        <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}"
+                                              onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">
                                             <input type="hidden" name="_token"
-                                                   value="{{ csrf_token('delete' ~ sortie.id) }}">
+                                                   value="{{ csrf_token('archive' ~ sortie.id) }}">
                                             <button
-                                                class="w-32 text-center px-3 py-1.5 bg-red-600 text-white text-xs rounded hover:bg-red-700">
-                                                Annuler
+                                                class="w-32 text-center px-3 py-1.5 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600">
+                                                Archiver
                                             </button>
                                         </form>
-                                    {% endif %}
-                                {% endif %}
 
-                                {# Actions d'inscription/désinscription pour tout utilisateur connecté #}
-                                {% if app.user and sortie.idOrganisateur != app.user %}
-                                    {% if sortie.etat and (sortie.etat.libelle == 'Ouvert' or sortie.etat.libelle == 'En création') %}
-                                        {% if sortie.participants.contains(app.user) %}
-                                            <form method="post"
-                                                  action="{{ path('app_sortie_desinscription', {id: sortie.id}) }}">
+                                        {% if sortie.etat and (sortie.etat.libelle == 'Ouvert' or sortie.etat.libelle == 'En cours') %}
+                                            <form method="post" action="{{ path('app_sortie_delete', {id: sortie.id}) }}"
+                                                  onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette sortie ?');">
                                                 <input type="hidden" name="_token"
-                                                       value="{{ csrf_token('desinscription' ~ sortie.id) }}">
+                                                       value="{{ csrf_token('delete' ~ sortie.id) }}">
                                                 <button
-                                                    class="w-32 text-center px-3 py-1.5 bg-blue-800 text-white text-xs rounded hover:bg-blue-900">
-                                                    <span>Se désinscrire</span>
-                                                </button>
-                                            </form>
-                                        {% else %}
-                                            <form method="post"
-                                                  action="{{ path('app_sortie_inscription', {id: sortie.id}) }}">
-                                                <input type="hidden" name="_token"
-                                                       value="{{ csrf_token('inscription' ~ sortie.id) }}">
-                                                <button
-                                                    class="w-32 text-center px-3 py-1.5 bg-blue-400 text-white text-xs rounded hover:bg-blue-500">
-                                                    <span>S'inscrire</span>
+                                                    class="w-32 text-center px-3 py-1.5 bg-red-600 text-white text-xs rounded hover:bg-red-700">
+                                                    Annuler
                                                 </button>
                                             </form>
                                         {% endif %}
                                     {% endif %}
-                                {% endif %}
 
-                            </td>
+                                    {# Actions d'inscription/désinscription pour tout utilisateur connecté #}
+                                    {% if app.user and sortie.idOrganisateur != app.user %}
+                                        {% if sortie.etat and (sortie.etat.libelle == 'Ouvert' or sortie.etat.libelle == 'En création') %}
+                                            {% if sortie.participants.contains(app.user) %}
+                                                <form method="post"
+                                                      action="{{ path('app_sortie_desinscription', {id: sortie.id}) }}">
+                                                    <input type="hidden" name="_token"
+                                                           value="{{ csrf_token('desinscription' ~ sortie.id) }}">
+                                                    <button
+                                                        class="w-32 text-center px-3 py-1.5 bg-blue-800 text-white text-xs rounded hover:bg-blue-900">
+                                                        <span>Se désinscrire</span>
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <form method="post"
+                                                      action="{{ path('app_sortie_inscription', {id: sortie.id}) }}">
+                                                    <input type="hidden" name="_token"
+                                                           value="{{ csrf_token('inscription' ~ sortie.id) }}">
+                                                    <button
+                                                        class="w-32 text-center px-3 py-1.5 bg-blue-400 text-white text-xs rounded hover:bg-blue-500">
+                                                        <span>S'inscrire</span>
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                 </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>
