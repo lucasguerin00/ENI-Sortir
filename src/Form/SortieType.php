@@ -22,9 +22,12 @@ class SortieType extends AbstractType
         $builder
             ->add('nom', TextType::class)
             ->add('dateHeureDebut', DateTimeType::class, [
+                'label' => 'Date et heure de début de la sortie',
                 'widget' => 'single_text',
             ])
-            ->add('duree', IntegerType::class)
+            ->add('duree', IntegerType::class, [
+                'label' => 'Durée de la sortie (en minutes)',
+            ])
             ->add('dateLimiteInscription', DateTimeType::class, [
                 'widget' => 'single_text',
             ])
@@ -32,26 +35,24 @@ class SortieType extends AbstractType
             ->add('infosSortie', TextType::class)
             ->add('idSite', EntityType::class, [
                 'class' => Site::class,
+                'label' => 'Site de la sortie',
                 'choice_label' => 'nom',
             ])
             ->add('idLieu', EntityType::class, [
                 'class' => Lieu::class,
+                'label' => 'Lieu de la sortie',
                 'choice_label' => 'nom',
             ])
-            ->add('rue', TextType::class, [
-                'mapped' => false,
-                'required' => false,
-            ])
-            ->add('latitude', TextType::class, [
-                'mapped' => false,
-                'required' => false,
-            ])
-            ->add('longitude', TextType::class, [
+            ->add('rue', EntityType::class, [
+                'class' => Lieu::class,
+                'label' => 'Adresse du rendez-vous',
+                'choice_label' => 'rue',
                 'mapped' => false,
                 'required' => false,
             ])
             ->add('idOrganisateur', EntityType::class, [
                 'class' => Participant::class,
+                'label' => 'Organisateur',
                 'choice_label' => 'pseudo',
             ])
         ;
