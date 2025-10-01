@@ -50,7 +50,6 @@ class ProfilController extends AbstractController
 
                 $originalFilename = $form->get('image')->getData()->getClientOriginalName();
 
-                // Déplacer le fichier dans /public/uploads pour qu'il soit accessible
                 $form->get('image')->getData()->move(
                     $this->getParameter('images_directory'),
                     $originalFilename
@@ -59,7 +58,7 @@ class ProfilController extends AbstractController
                 $user->setImage($originalFilename);
             }
 
-            $user->setPassword($passwordEncoder->hashPassword($user, $user->getPassword()));
+            $user->setPassword($passwordEncoder->hashPassword($user, $form->get('password')->getData()));
 
             $entityManager->persist($user);
             $entityManager->flush();
