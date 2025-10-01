@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Confirmation d'inscription</title>
+    </head>
+    <body>
+        <h2>Bonjour {{ participant.prenom }} {{ participant.nom }},</h2>
+
+        <p>Tu es bien inscrit à la sortie <strong>{{ sortie.nom }}</strong> !</p>
+
+        <ul>
+            <li><strong>📅 Date :</strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</li>
+            <li><strong>⏱ Durée :</strong> {{ sortie.duree }} minutes</li>
+            <li><strong>📍 Lieu :</strong> {{ sortie.idLieu.nom ?? 'Non renseigné' }}</li>
+            <li><strong>ℹ️ Infos :</strong> {{ sortie.infosSortie }}</li>
+            <li><strong>👥 Organisateur :</strong> {{ sortie.idOrganisateur.prenom }} {{ sortie.idOrganisateur.nom }}</li>
+            <li><strong>👤 Participants :</strong> {{ sortie.participants|length }} / {{ sortie.nbInscriptionMax }}</li>
+        </ul>
+
+        <p>Nous te souhaitons une excellente sortie</p>
+
+        <p>L’équipe de <strong>Sortir.com</strong></p>
+    </body>
+</html>

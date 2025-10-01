@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Confirmation de désinscription</title>
+    </head>
+    <body>
+        <h2>Bonjour {{ participant.prenom }} {{ participant.nom }},</h2>
+
+        <p>Tu t’es désinscrit de la sortie <strong>{{ sortie.nom }}</strong>.</p>
+
+        <ul>
+            <li><strong>📅 Date prévue :</strong> {{ sortie.dateHeureDebut|date('d/m/Y H:i') }}</li>
+            <li><strong>⏱ Durée :</strong> {{ sortie.duree }} minutes</li>
+            <li><strong>📍 Lieu :</strong> {{ sortie.idLieu.nom ?? 'Non renseigné' }}</li>
+        </ul>
+
+        <p>Nous espérons te revoir bientôt pour une autre sortie !</p>
+
+        <p>L’équipe de <strong>Sortir.com</strong></p>
+    </body>
+</html>

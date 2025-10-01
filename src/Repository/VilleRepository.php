@@ -31,13 +31,22 @@ class VilleRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-        public function findOneById($value): ?Ville
-        {
-            return $this->createQueryBuilder('v')
-                ->andWhere('v.id = :val')
-                ->setParameter('val', $value)
-                ->getQuery()
-                ->getOneOrNullResult()
-            ;
-        }
+    //    public function findOneBySomeField($value): ?Ville
+    //    {
+    //        return $this->createQueryBuilder('v')
+    //            ->andWhere('v.exampleField = :val')
+    //            ->setParameter('val', $value)
+    //            ->getQuery()
+    //            ->getOneOrNullResult()
+    //        ;
+    //    }
+
+    public function getAllVille(): array
+    {
+        return $this->createQueryBuilder('v')
+            ->orderBy('v.nom')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
