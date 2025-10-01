@@ -3,6 +3,16 @@
 {% block title %}Gestion des utilisateurs{% endblock %}
 
 {% block body %}
+
+    {{ form_start(form) }}
+        {{ form_row(form.csv_file) }}
+        <button class="btn btn-primary">Importer</button>
+    {{ form_end(form) }}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
     <table>
         <thead>
         <tr>
