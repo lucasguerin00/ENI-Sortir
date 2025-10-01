@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+{% import '_macros.html.twig' as macros %}
+
+{% block title %}{{ pageTitle }}{% endblock %}
+
+{% block body %}
+    <div class="min-h-screen flex items-start justify-center pt-4">
+        <div class="w-full max-w-4xl shadow-lg rounded-xl p-8 bg-gray-50">
+            <h1 class="text-2xl font-bold mb-6 text-center text-black">{{ pageTitle }}</h1>
+
+            {{ form_start(form) }}
+
+            {# On récupère tous les champs et on les divise automatiquement en deux colonnes #}
+            {% set fields = form|keys %} {# liste tous les noms de champs #}
+            {% set mid = (fields|length / 2)|round(0, 'ceil') %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-4">
+                    {% for fieldName in fields|slice(0, mid) %}
+                        {{ macros.formField(attribute(form, fieldName)) }}
+                    {% endfor %}
+                </div>
+
+                <div class="space-y-4">
+                    {% for fieldName in fields|slice(mid) %}
+                        {{ macros.formField(attribute(form, fieldName)) }}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="flex justify-between items-center mt-8">
+                <button class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-2 rounded-md transition duration-200">
+                    {{ buttonText }}
+                </button>
+                <a href="{{ path('app_sortie_list') }}" class="text-sm text-gray-600 hover:underline">
+                    Retour à la liste
+                </a>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

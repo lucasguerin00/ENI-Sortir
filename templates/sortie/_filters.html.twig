@@ -1,0 +1,19 @@
+<form method="get" action="{{ path('app_sortie_list') }}" class="flex gap-3">
+    <select name="site" class="border rounded px-3 py-2 text-sm" onchange="this.form.submit()">
+        <option value="all" {% if siteFilter == 'all' %}selected{% endif %}>Toutes les villes</option>
+        {% for site in sites %}
+            <option value="{{ site.id }}" {% if siteFilter == site.id %}selected{% endif %}>
+                {{ site.nom }}
+            </option>
+        {% endfor %}
+    </select>
+
+    {% if app.user %}
+        <select name="filter" class="border rounded px-3 py-2 text-sm" onchange="this.form.submit()">
+            <option value="all" {% if filter == 'all' %}selected{% endif %}>Toutes les sorties</option>
+            <option value="mine" {% if filter == 'mine' %}selected{% endif %}>Les sorties que j'organise</option>
+            <option value="inscrit" {% if filter == 'inscrit' %}selected{% endif %}>Sorties où je suis inscrit</option>
+            <option value="non_inscrit" {% if filter == 'non_inscrit' %}selected{% endif %}>Sorties où je ne suis pas inscrit</option>
+        </select>
+    {% endif %}
+</form>

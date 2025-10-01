@@ -1,0 +1,31 @@
+{% import '_macros.html.twig' as macros %}
+
+<div class="flex flex-col items-center gap-2">
+    {% if sortie.idOrganisateur == app.user %}
+        {% if sortie.etat and sortie.etat.libelle == 'Ouvert' %}
+            {{ macros.actionButton(path('app_sortie_edit', {id: sortie.id}), 'Modifier', 'green') }}
+        {% endif %}
+        <form method="post" action="{{ path('app_sortie_archive', {id: sortie.id}) }}" onsubmit="return confirm('Voulez-vous vraiment archiver cette sortie ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('archive' ~ sortie.id) }}">
+            <button class="w-32 text-center px-3 py-1.5 bg-yellow-500 text-white text-xs rounded hover:bg-yellow-600">Archiver</button>
+        </form>
+        {% if sortie.etat and sortie.etat.libelle in ['Ouvert', 'En cours'] %}
+            <form method="post" action="{{ path('app_sortie_delete', {id: sortie.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette sortie ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sortie.id) }}">
+                <button class="w-32 text-center px-3 py-1.5 bg-red-600 text-white text-xs rounded hover:bg-red-700">Annuler</button>
+            </form>
+        {% endif %}
+    {% elseif sortie.etat and sortie.etat.libelle in ['Ouvert', 'En création'] %}
+        {% if sortie.participants.contains(app.user) %}
+            <form method="post" action="{{ path('app_sortie_desinscription', {id: sortie.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('desinscription' ~ sortie.id) }}">
+                <button class="w-32 text-center px-3 py-1.5 bg-blue-800 text-white text-xs rounded hover:bg-blue-900">Se désinscrire</button>
+            </form>
+        {% else %}
+            <form method="post" action="{{ path('app_sortie_inscription', {id: sortie.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('inscription' ~ sortie.id) }}">
+                <button class="w-32 text-center px-3 py-1.5 bg-blue-400 text-white text-xs rounded hover:bg-blue-500">S'inscrire</button>
+            </form>
+        {% endif %}
+    {% endif %}
+</div>
