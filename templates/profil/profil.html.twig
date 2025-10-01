@@ -10,8 +10,10 @@
     <h3>Ville de ratachement :</h3> {{ site }}
 
     <a href="{{ path('app_default') }}">Retour</a>
-    {% if app.user.id == id  %}
-    <a href="{{ path('edit_participant', {'id': app.user.id }) }}">Modifier</a>
+    {% if app.user != null  %}
+        {% if app.user.id == id  %}
+            <a href="{{ path('edit_participant', {'id': app.user.id }) }}">Modifier</a>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

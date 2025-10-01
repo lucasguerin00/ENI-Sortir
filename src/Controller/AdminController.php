@@ -15,6 +15,7 @@ final class AdminController extends AbstractController
     public function index(ParticipantRepository $participantRepository): Response
     {
         $utilisateurs = $participantRepository->findAll();
+        $this->denyAccessUnlessGranted('ACCESS_ADMIN');
         return $this->render('admin/index.html.twig', [
             'utilisateurs' => $utilisateurs,
             'controller_name' => 'AdminController',
@@ -23,6 +24,7 @@ final class AdminController extends AbstractController
     #[Route('/admin/del/{id}', name: 'app_admin_delete')]
     public function delUser(ParticipantRepository $participantRepository, int $id, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_ADMIN');
         $utilisateur = $participantRepository->findOneById($id);
         $entityManager->remove($utilisateur);
         $entityManager->flush();
@@ -32,6 +34,7 @@ final class AdminController extends AbstractController
     #[Route('/admin/disable/{id}', name: 'app_admin_disable')]
     public function disableUser(ParticipantRepository $participantRepository, int $id, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_ADMIN');
         $utilisateur = $participantRepository->findOneById($id);
         $utilisateur->setIsActif(0);
         $entityManager->persist($utilisateur);
@@ -42,6 +45,7 @@ final class AdminController extends AbstractController
     #[Route('/admin/enable/{id}', name: 'app_admin_enable')]
     public function enableUser(ParticipantRepository $participantRepository, int $id, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_ADMIN');
         $utilisateur = $participantRepository->findOneById($id);
         $utilisateur->setIsActif(1);
         $entityManager->persist($utilisateur);

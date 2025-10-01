@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Participant;
+use App\Entity\Site;
 use App\Form\ParticipantType;
 use App\Form\ChangePasswordType;
 use App\Repository\ParticipantRepository;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class ProfilController extends AbstractController
 {
@@ -23,17 +25,27 @@ class ProfilController extends AbstractController
 
         $participant = $participantRepository->findOneById($id);
         $site = $siteRepository->findOneBy(['id' => $participant->getIdSite()]);
-
-        return $this->render('profil/profil.html.twig', [
-            'id' => $participant->getId(),
-            'pseudo' => $participant->getPseudo(),
-            'email' => $participant->getMail(),
-            'nom' => $participant->getNom(),
-            'prenom' => $participant->getPrenom(),
-            'telephone' => $participant->getTelephone(),
-            'site' => $site->getNom(),
-            'image' => $participant->getImage(),
-        ]);
+        if($site == null){
+            $site = new Site();
+        }
+        if($this->getUser()){
+            if($this->getUser()->getId()!=$participant->getId()){
+                return $this->redirectToRoute('app_default');
+            }else{
+                return $this->render('profil/profil.html.twig', [
+                    'id' => $participant->getId(),
+                    'pseudo' => $participant->getPseudo(),
+                    'email' => $participant->getMail(),
+                    'nom' => $participant->getNom(),
+                    'prenom' => $participant->getPrenom(),
+                    'telephone' => $participant->getTelephone(),
+                    'site' => $site->getNom(),
+                    'image' => $participant->getImage(),
+                ]);
+            }
+        }else{
+            return $this->redirectToRoute('app_default');
+        }
     }
 
     #[Route('/create', name: 'create_participant')]
