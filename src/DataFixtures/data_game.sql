@@ -66,19 +66,19 @@ INSERT INTO etat (id, libelle) VALUES
 -- TABLE : PARTICIPANT
 -- ========================
 INSERT INTO participant (id, mail, roles, password, nom, prenom, telephone, is_administrateur, is_actif, id_site_id, pseudo) VALUES
-(11, 'alice.herblain@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Dupont', 'Alice', '0611111111', false, true, 1, 'Ali44'),
-(12, 'benoit.herblain@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Martin', 'Benoît', '0622222222', false, true, 1, 'Ben44'),
-(13, 'chloe.rennes@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Durand', 'Chloé', '0633333333', false, true, 2, 'Chlo35'),
-(4, 'david.rennes@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Lemoine', 'David', '0644444444', false, true, 2, 'Dave35'),
-(1, 'cloe@gmail.com', '["ADMIN"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Lemarechal', 'Cloe', '0644444444', true, true, 1, 'CloeCDA'),
-(2, 'lucas@gmail.com', '["ADMIN"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Guerin', 'Lucas', '0644444444', true, true, 1, 'LucasCDA'),
-(3, 'aime@gmail.com', '["ADMIN"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Chaigneau', 'Aime', '0644444444', true, true, 1, 'AimeCDA'),
-(5, 'emma.niort@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Bernard', 'Emma', '0655555555', false, true, 3, 'Emma79'),
-(6, 'francois.niort@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Moreau', 'François', '0666666666', false, true, 3, 'Fran79'),
-(7, 'isabelle.laval@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Petit', 'Isabelle', '0677777777', false, true, 4, 'Isa53'),
-(8, 'julien.laval@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Dubois', 'Julien', '0688888888', false, true, 4, 'Juju53'),
-(9, 'karim.rennes@mail.com', '["ROLE_ADMIN"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Ahmed', 'Karim', '0699999999', true, true, 2, 'Admin35'),
-(10,'luc.herblain@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C','Lucas', 'Luc', '0600000000', false, false, 1, 'Luc44');
+(11, 'jean.bon@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Bon', 'Jean', '0611111111', false, true, 1, 'JeanBon'),
+(12, 'alain.terior@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Térieur', 'Alain', '0622222222', false, true, 1, 'Intérieur44'),
+(13, 'claire.ring@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Ring', 'Claire', '0633333333', false, true, 2, 'ClairObscur35'),
+(4, 'marc.assin@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Assin', 'Marc', '0644444444', false, true, 2, 'Marcassin35'),
+(1, 'anna.gramme@gmail.com', '["ADMIN"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Gramme', 'Anna', '0644444444', true, true, 1, 'Anagramme'),
+(2, 'luc.belle@gmail.com', '["ADMIN"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Belle', 'Luc', '0644444444', true, true, 1, 'LucBelle'),
+(3, 'will.o.sophe@gmail.com', '["ADMIN"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Sophe', 'Will O.', '0644444444', true, true, 1, 'PhiloWill'),
+(5, 'syl.vain@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Vain', 'Syl', '0655555555', false, true, 3, 'Sylvain79'),
+(6, 'guy.tar@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Tar', 'Guy', '0666666666', false, true, 3, 'Guitare79'),
+(7, 'ella.fontaine@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Fontaine', 'Ella', '0677777777', false, true, 4, 'EauClaire53'),
+(8, 'pierre.tombal@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Tombal', 'Pierre', '0688888888', false, true, 4, 'PierreGrave53'),
+(9, 'sal.lemandre@mail.com', '["ROLE_ADMIN"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C', 'Lemandre', 'Sal', '0699999999', true, true, 2, 'SelEtPoivre35'),
+(10,'luc.ifer@mail.com', '["ROLE_USER"]', '$2y$13$0WF4KSBahl.MreCj.ihXIe8USt/j1X3ArmoafV4bR1WafWZ5Mbw0C','Ifer', 'Luc', '0600000000', false, false, 1, 'Diable44');
 
 -- ========================
 -- TABLE : SORTIE

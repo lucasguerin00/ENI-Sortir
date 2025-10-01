@@ -9,64 +9,10 @@
     {% endblock %}
 </head>
 
-<body class="bg-gray-100">
-<div class="flex h-screen">
-
-    {# --- Sidebar --- #}
-    <aside class="w-16 bg-white border-r border-gray-200 flex flex-col items-center py-6 space-y-8 shadow-md">
-
-        <!-- Sorties -->
-        <a href="{{ path('app_sortie_list') }}" class="group relative">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-            <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition">
-                        Sorties
-                    </span>
-        </a>
-
-        <!-- Lieu -->
-        <a href="{{ path('app_lieu') }}" class="group relative">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z" />
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-7.333 8-13a8 8 0 10-16 0c0 5.667 8 13 8 13z" />
-            </svg>
-            <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition">
-                        Lieux
-                    </span>
-        </a>
-
-        <!-- Ville -->
-        <a href="{{ path('app_ville') }}" class="group relative">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4a2 2 0 012-2h3V7a2 2 0 012-2h4a2 2 0 012 2v8h3a2 2 0 012 2v4" />
-            </svg>
-            <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition">
-                        Villes
-                    </span>
-        </a>
-
-        <!-- Admin -->
-        {% if is_granted('ROLE_ADMIN') %}
-            <a href="{{ path('app_admin') }}" class="group relative">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M11.049 2.927c.3-.921 1.603-.921 1.902 0a1.724 1.724 0 002.591.949c.809-.467 1.753.477 1.286 1.286a1.724 1.724 0 00.95 2.591c.921.3.921 1.603 0 1.902a1.724 1.724 0 00-.95 2.591c.467.809-.477 1.753-1.286 1.286a1.724 1.724 0 00-2.591.95c-.3.921-1.603.921-1.902 0a1.724 1.724 0 00-2.591-.95c-.809.467-1.753-.477-1.286-1.286a1.724 1.724 0 00-.95-2.591c-.921-.3-.921-1.603 0-1.902a1.724 1.724 0 00.95-2.591c-.467-.809.477-1.753 1.286-1.286a1.724 1.724 0 002.591-.95z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span class="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs rounded py-1 px-2 opacity-0 group-hover:opacity-100 transition">
-                        Admin
-                    </span>
-            </a>
-        {% endif %}
-
-        {# Futures autres icones/route #}
-    </aside>
-
-    {# --- Zone de droite avec header + contenu --- #}
-    <div class="flex-1 flex flex-col">
+    <body class="bg-gray-100">
+        <div class="flex h-screen">
+            {# --- Sidebar --- #}
+            {% include '_sidebar.html.twig' %}
 
         {# --- Header --- #}
         <header class="bg-white shadow-md">
@@ -75,36 +21,14 @@
                 <div class="flex items-center space-x-3">
                     <a href="{{ path('app_sortie_list') }}" class="text-xl font-bold text-gray-800">ENI-Sortir.com</a>
                 </div>
+                {# --- Header --- #}
+                {% include '_header.html.twig' %}
 
-                <!-- Zone connexion / utilisateur -->
-                <div>
-                    {% if app.user %}
-                        <span class="text-gray-700 mr-4">
-                                Bonjour, <strong>{{ app.user.prenom }} {{ app.user.nom }}</strong>
-                            </span>
-                        <a href="{{ path('profil', {'id': app.user.id }) }}"
-                           class="mr-5 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition">
-                            Profil
-                        </a>
-                        <a href="{{ path('app_logout') }}"
-                           class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition">
-                            Déconnexion
-                        </a>
-                    {% else %}
-                        <a href="{{ path('app_login') }}"
-                           class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg transition">
-                            Connexion
-                        </a>
-                    {% endif %}
-                </div>
+                {# --- Contenu principal --- #}
+                <main class="flex-1 p-6 overflow-y-auto">
+                    {% block body %}{% endblock %}
+                </main>
             </div>
-        </header>
-
-        {# --- Contenu principal --- #}
-        <main class="flex-1 p-6 overflow-y-auto">
-            {% block body %}{% endblock %}
-        </main>
-    </div>
-</div>
-</body>
+        </div>
+    </body>
 </html>
