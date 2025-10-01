@@ -17,6 +17,7 @@ final class VilleController extends AbstractController
     #[Route('/ville', name: 'app_ville')]
     public function index(VilleRepository $villeRepository): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_VILLE');
         $villes=$villeRepository->findAll();
         return $this->render('ville/index.html.twig', [
             'villes' => $villes,
@@ -27,6 +28,7 @@ final class VilleController extends AbstractController
     #[Route('/ville/add', name: 'app_ville_add')]
     public function add(Request $request, EntityManagerInterface $entityManager, VilleRepository $villeRepository): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_VILLE_ADMIN');
         $ville = new Ville();
 
         $form = $this->createForm(VilleType::class, $ville);
@@ -50,6 +52,7 @@ final class VilleController extends AbstractController
     #[Route('/ville/del/{id}', name: 'app_ville_delete')]
     public function delete(VilleRepository $villeRepository, int $id, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_VILLE_ADMIN');
         $ville = $villeRepository->findOneById($id);
         try{
         $entityManager->remove($ville);
@@ -65,6 +68,7 @@ final class VilleController extends AbstractController
     #[Route('/ville/edit/{id}', name: 'app_ville_edit')]
     public function edit(Request $request, VilleRepository $villeRepository, int $id, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_VILLE_ADMIN');
         $ville = $villeRepository->findOneById($id);
         $form = $this->createForm(VilleType::class, $ville);
         $form->handleRequest($request);
