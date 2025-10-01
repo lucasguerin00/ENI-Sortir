@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Etat;
+use App\Entity\Site;
 use App\Entity\Sortie;
 use App\Form\SortieType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,6 +28,7 @@ class SortieController extends AbstractController
     public function list(Request $request, EntityManagerInterface $entityManager): Response
     {
         $filter = $request->query->get('filter', 'all'); // all par défaut
+        $siteFilter = $request->query->get('site', 'all'); // all par défaut
         $user = $this->getUser();
 
         $repo = $entityManager->getRepository(Sortie::class);
@@ -43,6 +45,14 @@ class SortieController extends AbstractController
             }
         }
 
+        // Filtre par ville
+        if ($siteFilter !== 'all') {
+            $sorties = array_filter($sorties, fn(Sortie $s) => $s->getIdSite() && $s->getIdSite()->getId() == $siteFilter);
+        }
+
+        // Récupération de tous les sites pour alimenter le select
+        $sites = $entityManager->getRepository(Site::class)->findAll();
+
         // Mise à jour des états avant affichage
         foreach ($sorties as $sortie) {
             $this->updateEtat($sortie, $entityManager);
@@ -51,9 +61,12 @@ class SortieController extends AbstractController
 
         return $this->render('sortie/list.html.twig', [
             'sorties' => $sorties,
-            'filter' => $filter
+            'filter' => $filter,
+            'siteFilter' => $siteFilter,
+            'sites' => $sites,
         ]);
     }
+
 
     // Affiche le formulaire de création des sorties
     #[Route('/sortie/new', name: 'app_sortie_new')]
