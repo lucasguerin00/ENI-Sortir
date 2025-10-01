@@ -67,13 +67,6 @@ class SortieController extends AbstractController
         ]);
     }
 
-    // Affiche la liste des sorties
-    #[Route('/sorties', name: 'app_sortie_list')]
-    public function list(EntityManagerInterface $entityManager): Response
-    {
-        return $this->redirectToRoute('app_default');
-    }
-
     // Affiche le formulaire de création des sorties
     #[Route('/sortie/new', name: 'app_sortie_new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
