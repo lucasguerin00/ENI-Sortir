@@ -3,9 +3,15 @@
         {'route': 'app_sortie_list', 'icon': 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'label': 'Sorties'},
         {'route': 'app_lieu', 'icon': 'M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z M12 22s8-7.333 8-13a8 8 0 10-16 0c0 5.667 8 13 8 13z', 'label': 'Lieux'},
         {'route': 'app_ville', 'icon': 'M3 21v-4a2 2 0 012-2h3V7a2 2 0 012-2h4a2 2 0 012 2v8h3a2 2 0 012 2v4', 'label': 'Villes'},
+    ] %}
+    {% if is_granted('ROLE_ADMIN') %}
+    {% set menuItems = [
+        {'route': 'app_sortie_list', 'icon': 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'label': 'Sorties'},
+        {'route': 'app_lieu', 'icon': 'M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5s-3 1.343-3 3 1.343 3 3 3z M12 22s8-7.333 8-13a8 8 0 10-16 0c0 5.667 8 13 8 13z', 'label': 'Lieux'},
+        {'route': 'app_ville', 'icon': 'M3 21v-4a2 2 0 012-2h3V7a2 2 0 012-2h4a2 2 0 012 2v8h3a2 2 0 012 2v4', 'label': 'Villes'},
         {'route': 'app_admin', 'icon': 'M11.049 2.927c.3-.921 1.603-.921 1.902 0a1.724 1.724 0 002.591.949c.809-.467 1.753.477 1.286 1.286a1.724 1.724 0 00.95 2.591c.921.3.921 1.603 0 1.902a1.724 1.724 0 00-.95 2.591c.467.809-.477 1.753-1.286 1.286a1.724 1.724 0 00-2.591.95c-.3.921-1.603.921-1.902 0a1.724 1.724 0 00-2.591-.95c-.809.467-1.753-.477-1.286-1.286a1.724 1.724 0 00-.95-2.591c-.921-.3-.921-1.603 0-1.902a1.724 1.724 0 00.95-2.591c-.467-.809.477-1.753 1.286-1.286a1.724 1.724 0 002.591-.95z M15 12a3 3 0 11-6 0 3 3 0 016 0z', 'label': 'Admin'}
     ] %}
-
+    {% endif %}
     {% for item in menuItems %}
         <a href="{{ path(item.route) }}" class="group relative">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 group-hover:text-blue-600 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">

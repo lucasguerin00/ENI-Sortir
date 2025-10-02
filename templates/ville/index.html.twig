@@ -7,10 +7,11 @@
 
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold text-gray-800">Gérer les villes</h1>
-            <a href="/ville/add"
-               class="px-5 py-2.5 bg-green-700 text-white rounded-lg hover:bg-green-800 transition font-medium text-sm">
-                Ajouter
-            </a>
+            {% if is_granted('ACCESS_VILLE_ADMIN') %}
+              <a href="/ville/add" class="mb-10 ml-20 focus:outline-none text-white bg-green-700 hover:bg-green-800 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                  Ajouter
+              </a>
+             {% endif %}
         </div>
 
         {# Flash messages #}
@@ -34,7 +35,11 @@
                     <tr>
                         <th class="px-6 py-3 text-left">Nom</th>
                         <th class="px-6 py-3 text-left">Code Postal</th>
-                        <th class="px-6 py-3 text-left">Action</th>
+                        {% if is_granted('ACCESS_VILLE_ADMIN') %}
+                          <th scope="col" class="px-6 py-3">
+                              Actions
+                          </th>
+                      {% endif %}
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200 text-sm text-gray-800">
@@ -42,16 +47,16 @@
                         <tr class="hover:bg-gray-50">
                             <td class="px-6 py-4 font-medium">{{ ville.nom }}</td>
                             <td class="px-6 py-4">{{ ville.codePostal }}</td>
-                            <td class="px-6 py-4 flex flex-col sm:flex-row gap-2">
-                                <a href="/ville/del/{{ ville.id }}"
-                                   class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-xs text-center transition">
-                                    Supprimer
-                                </a>
-                                <a href="/ville/edit/{{ ville.id }}"
-                                   class="px-3 py-1 bg-yellow-400 text-gray-800 rounded hover:bg-yellow-500 text-xs text-center transition">
-                                    Modifier
-                                </a>
-                            </td>
+                            {% if is_granted('ACCESS_VILLE_ADMIN') %}
+                              <td class="px-6 py-4">
+                                  <a href="/ville/del/{{ ville.id }}" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+                                      Supprimer
+                                  </a>
+                                  <a href="/ville/edit/{{ ville.id }}" class="focus:outline-none text-white bg-yellow-400 hover:bg-yellow-500 focus:ring-4 focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:focus:ring-yellow-900">
+                                      Modifier
+                                  </a>
+                              </td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                     </tbody>

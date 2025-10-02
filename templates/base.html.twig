@@ -1,30 +1,30 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Dashboard{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {% block stylesheets %}
-            <script src="https://cdn.tailwindcss.com"></script>
-        {% endblock %}
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Dashboard{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+    {% block stylesheets %}
+        <script src="https://cdn.tailwindcss.com"></script>
+    {% endblock %}
+</head>
 
-    <body class="bg-gray-100">
-        <div class="flex h-screen">
-            {# --- Sidebar --- #}
-            {% include '_sidebar.html.twig' %}
+<body class="bg-gray-100">
+<div class="flex h-screen">
+    {# --- Sidebar --- #}
+    {% include '_sidebar.html.twig' %}
 
-            {# --- Zone de droite avec header + contenu --- #}
-            <div class="flex-1 flex flex-col">
+    {# --- Zone de droite avec header + contenu --- #}
+    <div class="flex-1 flex flex-col">
 
-                {# --- Header --- #}
-                {% include '_header.html.twig' %}
+        {# --- Header --- #}
+        {% include '_header.html.twig' %}
 
-                {# --- Contenu principal --- #}
-                <main class="flex-1 p-6 overflow-y-auto">
-                    {% block body %}{% endblock %}
-                </main>
-            </div>
-        </div>
-    </body>
+        {# --- Contenu principal --- #}
+        <main class="flex-1 p-6 overflow-y-auto">
+            {% block body %}{% endblock %}
+        </main>
+    </div>
+</div>
+</body>
 </html>

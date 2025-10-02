@@ -24,7 +24,16 @@ class SortieRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    
+    public function findAllOrdered(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.isArchived = :archived OR s.isArchived IS NULL')
+            ->setParameter('archived', false)
+            ->orderBy('s.dateHeureDebut', 'DESC') // ou 'DESC' selon votre volonté
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Sortie[] Returns an array of Sortie objects
     //     */

@@ -1,12 +1,23 @@
 -- ========================
 -- TABLE : VILLE
 -- ========================
+TRUNCATE  TABLE sortie_participant;
+TRUNCATE  TABLE sortie;
+TRUNCATE  TABLE lieu;
+TRUNCATE  TABLE ville;
+TRUNCATE  TABLE etat;
+TRUNCATE  TABLE participant;
+TRUNCATE  TABLE site;
+
+-- ========================
+-- TABLE : VILLE
+-- ========================
 INSERT INTO ville (id, nom, code_postal) VALUES
- (1, 'Saint-Herblain', '44800'),
- (2, 'Rennes', '35000'),
- (3, 'Niort', '79000'),
- (4, 'Laval', '53000'),
- (5, 'Nantes', '44000');
+(1, 'Saint-Herblain', '44800'),
+(2, 'Rennes', '35000'),
+(3, 'Niort', '79000'),
+(4, 'Laval', '53000'),
+(5, 'Nantes', '44000');
 
 -- ========================
 -- TABLE : LIEU

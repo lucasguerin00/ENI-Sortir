@@ -20,6 +20,7 @@ class SortieController extends AbstractController
     #[Route('/', name: 'app_default')]
     public function defaultRoute(EntityManagerInterface $entityManager): Response
     {
+
         return $this->redirectToRoute('app_sortie_list');
     }
 
@@ -31,8 +32,7 @@ class SortieController extends AbstractController
         $siteFilter = $request->query->get('site', 'all'); // all par défaut
         $user = $this->getUser();
 
-        $repo = $entityManager->getRepository(Sortie::class);
-        $sorties = $repo->findAll();
+        $sorties = $entityManager->getRepository(Sortie::class)->findAllOrdered();
 
         // Application des filtres côté PHP
         if ($user) {
@@ -67,13 +67,12 @@ class SortieController extends AbstractController
         ]);
     }
 
-
     // Affiche le formulaire de création des sorties
     #[Route('/sortie/new', name: 'app_sortie_new')]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $sortie = new Sortie();
-
+        $this->denyAccessUnlessGranted('ACCESS_SORTIE');
         // Récupère l'utilisateur connecté
         $user = $this->getUser();
         if ($user) {
@@ -104,6 +103,7 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}', name: 'app_sortie_show')]
     public function show(Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
+
         $this->updateEtat($sortie, $entityManager);
         $entityManager->flush();
 
@@ -116,6 +116,7 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}/edit', name: 'app_sortie_edit')]
     public function edit(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_SORTIE');
         // Vérifie que l'utilisateur est connecté et organisateur
         if ($this->getUser() !== $sortie->getIdOrganisateur()) {
             throw $this->createAccessDeniedException('Vous ne pouvez modifier que vos propres sorties.');
@@ -150,9 +151,10 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}/delete', name: 'app_sortie_delete', methods: ['POST'])]
     public function delete(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_SORTIE');
         // Vérifie que l'utilisateur est connecté et organisateur
         if ($this->getUser() !== $sortie->getIdOrganisateur()) {
-            throw $this->createAccessDeniedException('Vous ne pouvez annulé que vos propres sorties.');
+            throw $this->createAccessDeniedException('Vous ne pouvez annuler que vos propres sorties.');
         }
 
         // Vérifie le token CSRF pour éviter l'annulation accidentelle
@@ -160,7 +162,7 @@ class SortieController extends AbstractController
             $entityManager->remove($sortie);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Sortie annulé avec succès !');
+            $this->addFlash('success', 'Sortie annulée avec succès !');
         }
 
         return $this->redirectToRoute('app_sortie_list');
@@ -170,9 +172,10 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}/archive', name: 'app_sortie_archive', methods: ['POST'])]
     public function archive(Request $request, Sortie $sortie, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_SORTIE');
         // Vérifie que l'utilisateur est connecté et organisateur
         if ($this->getUser() !== $sortie->getIdOrganisateur()) {
-            throw $this->createAccessDeniedException('Vous ne pouvez archivé que vos propres sorties.');
+            throw $this->createAccessDeniedException('Vous ne pouvez archiver que vos propres sorties.');
         }
 
         if ($this->isCsrfTokenValid('archive' . $sortie->getId(), $request->request->get('_token'))) {
@@ -190,6 +193,7 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}/inscription', name: 'app_sortie_inscription')]
     public function inscription(Sortie $sortie, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_SORTIE');
         $user = $this->getUser();
 
         // L'utilisateur doit être connecté pour s'inscrire
@@ -233,6 +237,7 @@ class SortieController extends AbstractController
     #[Route('/sortie/{id}/desinscription', name: 'app_sortie_desinscription')]
     public function desinscription(Sortie $sortie, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_SORTIE');
         $user = $this->getUser();
 
         if (!$user) {

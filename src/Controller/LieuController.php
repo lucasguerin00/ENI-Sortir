@@ -12,10 +12,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class LieuController extends AbstractController
 {
     #[Route('/lieu', name: 'app_lieu')]
+    #[IsGranted('ACCESS_LIEU', message: "Pas autorisé à regarder les lieux")]
     public function index(LieuRepository $lieuRepository): Response
     {
         $lieux = $lieuRepository->findAll();
@@ -28,6 +30,7 @@ final class LieuController extends AbstractController
     #[Route('/lieu/add', name: 'app_lieu_add')]
     public function add(Request $request, EntityManagerInterface $entityManager, VilleRepository $villeRepository): Response
     {
+        $this->denyAccessUnlessGranted('ACCESS_LIEU_ADMIN');
         $lieu = new Lieu();
 
         $form = $this->createForm(LieuType::class, $lieu);
@@ -54,6 +57,7 @@ final class LieuController extends AbstractController
     public function delete(LieuRepository $lieuRepository, int $id, EntityManagerInterface $entityManager): Response
     {
         $lieu = $lieuRepository->findOneById($id);
+        $this->denyAccessUnlessGranted('ACCESS_LIEU_ADMIN', $lieu);
         $entityManager->remove($lieu);
         $entityManager->flush();
         return $this->redirectToRoute('app_lieu');
@@ -63,6 +67,7 @@ final class LieuController extends AbstractController
     public function edit(Request $request, LieuRepository $lieuRepository, int $id, EntityManagerInterface $entityManager): Response
     {
         $lieu = $lieuRepository->findOneById($id);
+        $this->denyAccessUnlessGranted('ACCESS_LIEU_ADMIN', $lieu);
         $form = $this->createForm(LieuType::class, $lieu);
         $form->handleRequest($request);
 
