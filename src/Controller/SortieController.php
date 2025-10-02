@@ -94,7 +94,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('app_sortie_list');
         }
 
-        return $this->render('sortie/new.html.twig', [
+        return $this->render('sortie/forms/new.html.twig', [
             'form' => $form->createView(),
         ]);
     }
@@ -141,7 +141,7 @@ class SortieController extends AbstractController
             return $this->redirectToRoute('app_sortie_list');
         }
 
-        return $this->render('sortie/edit.html.twig', [
+        return $this->render('sortie/forms/edit.html.twig', [
             'form' => $form->createView(),
             'sortie' => $sortie,
         ]);
@@ -196,6 +196,7 @@ class SortieController extends AbstractController
         $this->denyAccessUnlessGranted('ACCESS_SORTIE');
         $user = $this->getUser();
 
+        // L'utilisateur doit être connecté pour s'inscrire
         if (!$user) {
             throw $this->createAccessDeniedException('Vous devez être connecté pour vous inscrire.');
         }
@@ -226,12 +227,7 @@ class SortieController extends AbstractController
                 'participant' => $user,
                 'sortie' => $sortie,
             ]);
-
-        try {
-            $mailer->send($email);
-        } catch (TransportExceptionInterface $e) {
-            $this->addFlash('error', 'Le mail de confirmation n’a pas pu être envoyé.');
-        }
+        $mailer->send($email);
 
         $this->addFlash('success', 'Inscription réussie !');
         return $this->redirectToRoute('app_sortie_show', ['id' => $sortie->getId()]);

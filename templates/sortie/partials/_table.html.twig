@@ -37,7 +37,7 @@
                     <td class="px-4 py-3">{{ sortie.idOrganisateur ? sortie.idOrganisateur.prenom ~ ' ' ~ sortie.idOrganisateur.nom : '' }}</td>
                     {% if app.user %}
                         <td class="px-4 py-3">
-                            {% include 'sortie/_actions.html.twig' %}
+                            {{ include('sortie/partials/_actions-buttons.html.twig') }}
                         </td>
                     {% endif %}
                 </tr>

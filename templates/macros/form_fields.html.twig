@@ -1,0 +1,14 @@
+{% macro render_form(form) %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for child in form %}
+            {% if child.vars.name not in ['_token'] %}
+                <div class="space-y-4">
+                    {{ form_row(child, {
+                        label_attr: {'class': 'text-black'},
+                        attr: {'class': 'w-full px-4 py-2 border border-gray-300 rounded-md bg-white text-black'}
+                    }) }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endmacro %}
